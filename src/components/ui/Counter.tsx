@@ -24,13 +24,10 @@ export function Counter({
   const inView = useInView(ref, { once: true, amount: 0.5 });
   const [display, setDisplay] = useState(0);
 
-  useEffect(() => {
-    if (!inView) return;
+  const shouldCount = inView && !reduced;
 
-    if (reduced) {
-      setDisplay(value);
-      return;
-    }
+  useEffect(() => {
+    if (!shouldCount) return;
 
     const controls = animate(0, value, {
       duration,
@@ -39,11 +36,13 @@ export function Counter({
     });
 
     return () => controls.stop();
-  }, [inView, reduced, value, duration]);
+  }, [shouldCount, value, duration]);
 
   return (
     <span ref={ref} className={className}>
-      {display}
+      {/* Under reduced motion the final figure is rendered directly — the
+          statistic is the content, so it must never depend on an animation. */}
+      {reduced ? value : display}
     </span>
   );
 }

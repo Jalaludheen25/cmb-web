@@ -88,7 +88,7 @@ export function Testimonials() {
         </div>
 
         <Reveal delay={0.1}>
-          <p className="mt-14 border-t border-sand/15 pt-6 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-sand/45">
+          <p className="mt-14 border-t border-sand/15 pt-6 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-sand/60">
             Placeholder quotes — replace with attributed client testimonials before launch.
           </p>
         </Reveal>

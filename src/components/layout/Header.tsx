@@ -24,10 +24,14 @@ export function Header() {
     setHidden(latest > previous && latest > 420 && !open);
   });
 
-  // Close the overlay on route change.
-  useEffect(() => {
+  // Close the overlay on route change. Adjusting during render (rather than in
+  // an effect) means the overlay is never committed to the screen for a frame
+  // on top of the page it was navigating away from.
+  const [lastPath, setLastPath] = useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   // Lock the page behind the overlay and support Escape to dismiss.
   useEffect(() => {

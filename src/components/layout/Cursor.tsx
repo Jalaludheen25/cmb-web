@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 /**
  * Bespoke pointer: a hard brass dot that tracks exactly, plus a soft ring that
@@ -16,7 +17,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
  */
 export function Cursor() {
   const reduced = useReducedMotion();
-  const [enabled, setEnabled] = useState(false);
+  const finePointer = useMediaQuery("(pointer: fine)");
   const [active, setActive] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -25,11 +26,7 @@ export function Cursor() {
   const ringX = useSpring(x, { stiffness: 180, damping: 20, mass: 0.5 });
   const ringY = useSpring(y, { stiffness: 180, damping: 20, mass: 0.5 });
 
-  useEffect(() => {
-    if (reduced) return;
-    if (!window.matchMedia("(pointer: fine)").matches) return;
-    setEnabled(true);
-  }, [reduced]);
+  const enabled = finePointer && !reduced;
 
   useEffect(() => {
     if (!enabled) return;

@@ -164,7 +164,6 @@ function Lightbox({ onClose }: { onClose: () => void }) {
           transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
           className="overflow-hidden rounded-sm border border-ink-line bg-ink"
         >
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <video
             src="/video/showreel-sea.mp4"
             poster="/video/showreel-sea-poster.jpg"

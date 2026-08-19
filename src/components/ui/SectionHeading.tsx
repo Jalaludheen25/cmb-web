@@ -43,7 +43,7 @@ export function SectionHeading({
         <p
           className={cn(
             "eyebrow flex items-center gap-3",
-            tone === "dark" ? "text-sand-dim" : "text-ink/55",
+            tone === "dark" ? "text-sand-dim" : "text-ink/60",
           )}
         >
           <span aria-hidden="true" className="inline-block h-px w-8 bg-brass" />

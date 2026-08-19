@@ -2,9 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useFrugalConnection, useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
-
-type Connection = { saveData?: boolean; effectiveType?: string };
 
 /**
  * Decorative full-bleed video.
@@ -17,9 +16,10 @@ type Connection = { saveData?: boolean; effectiveType?: string };
  *   · narrow viewport → the smaller encode
  *   · scrolled away   → paused, to stop it burning battery off-screen
  *
- * Choosing the source on the client means no bytes are wasted before we know
- * the viewport, which matters more than the few hundred milliseconds the poster
- * covers on its own.
+ * Note there is no `autoPlay`. Playback is started by the intersection observer
+ * below, which is what lets `preload="none"` actually mean something: no bytes
+ * move until the element is on screen and we have settled on which encode to
+ * ask for.
  */
 export function BackgroundVideo({
   src,
@@ -37,26 +37,18 @@ export function BackgroundVideo({
   overlayClassName?: string;
 }) {
   const reduced = useReducedMotion();
+  const frugal = useFrugalConnection();
+  const narrow = useMediaQuery("(max-width: 820px)");
+
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [source, setSource] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
-  // Decide whether — and which — video to load.
-  useEffect(() => {
-    if (reduced) return;
+  // Derived during render — no effect, so there is no frame where the wrong
+  // encode is attached to the element.
+  const source = reduced || frugal ? null : narrow && mobileSrc ? mobileSrc : src;
 
-    const connection = (
-      navigator as Navigator & { connection?: Connection }
-    ).connection;
-    if (connection?.saveData) return;
-    if (connection?.effectiveType && /2g/.test(connection.effectiveType)) return;
-
-    const narrow = window.matchMedia("(max-width: 820px)").matches;
-    setSource(narrow && mobileSrc ? mobileSrc : src);
-  }, [reduced, src, mobileSrc]);
-
-  // Pause once fully scrolled past; resume when back in view.
+  // Play while on screen, pause once past. Also what kicks off the download.
   useEffect(() => {
     const node = containerRef.current;
     if (!node || !source) return;
@@ -96,7 +88,6 @@ export function BackgroundVideo({
           ref={videoRef}
           poster={poster}
           src={source}
-          autoPlay
           muted
           loop
           playsInline

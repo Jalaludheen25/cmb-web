@@ -60,7 +60,7 @@ export function Insights() {
                     <span aria-hidden="true" className="h-3 w-px bg-ink/20" />
                     <time
                       dateTime={article.date}
-                      className="font-mono text-[0.625rem] uppercase tracking-[0.16em] text-ink/50"
+                      className="font-mono text-[0.625rem] uppercase tracking-[0.16em] text-ink/60"
                     >
                       {new Date(article.date).toLocaleDateString("en-GB", {
                         day: "2-digit",
@@ -78,7 +78,7 @@ export function Insights() {
                     {article.excerpt}
                   </p>
 
-                  <span className="mt-6 flex items-center gap-3 border-t border-ink/15 pt-4 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-ink/55">
+                  <span className="mt-6 flex items-center gap-3 border-t border-ink/15 pt-4 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-ink/60">
                     {article.readTime} read
                     <svg
                       viewBox="0 0 16 16"
@@ -101,7 +101,7 @@ export function Insights() {
           ))}
         </RevealGroup>
 
-        <p className="mt-12 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-ink/40">
+        <p className="mt-12 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-ink/65">
           Placeholder articles — links resolve to contact until the journal is live.
         </p>
       </div>
