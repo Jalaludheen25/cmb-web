@@ -12,13 +12,9 @@ const nextConfig: NextConfig = {
 
   async headers() {
     return [
-      {
-        // Fingerprinted build assets are safe to cache forever.
-        source: "/_next/static/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
+      // NOTE: no rule for /_next/static — Next.js already serves fingerprinted
+      // build assets as `immutable` in production, and overriding the header
+      // here leaks into `next dev`, where it breaks hot reloading.
       {
         // Media is large and rarely changes; a long TTL with revalidation keeps
         // repeat visits cheap without stranding a replaced file.
