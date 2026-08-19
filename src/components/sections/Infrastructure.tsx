@@ -55,7 +55,7 @@ const plates = [
   },
   {
     src: "/images/infrastructure/beams.jpg",
-    alt: "Sunlight falling through the roof structure of a distribution centre.",
+    alt: "The structural interior of a distribution hall, cranes overhead.",
     caption: "Facilities",
     meta: "40,000 m² under roof",
     ratio: "aspect-[4/5]",
