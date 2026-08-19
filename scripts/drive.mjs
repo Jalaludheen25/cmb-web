@@ -137,7 +137,14 @@ check("contact: unconfigured endpoint fails loudly",
 await page.screenshot({ path: `${OUT}/06-contact-503.png` });
 
 // ── 8. Mobile menu ──────────────────────────────────────────────────────────
-const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
+// hasTouch/isMobile so `(pointer: coarse)` matches — that is what keeps Lenis
+// disabled here, exactly as on a real handset. Emulating size alone gives a
+// fine-pointer phone, which is not a device that exists.
+const mobile = await browser.newPage({
+  viewport: { width: 390, height: 844 },
+  hasTouch: true,
+  isMobile: true,
+});
 await mobile.goto(BASE, { waitUntil: "networkidle" });
 await mobile.waitForTimeout(1600);
 await mobile.getByRole("button", { name: /Open menu/i }).click();
@@ -146,7 +153,7 @@ const menu = mobile.getByRole("dialog", { name: /Site menu/i });
 check("mobile: menu overlay opens", await menu.isVisible());
 await mobile.screenshot({ path: `${OUT}/07-mobile-menu.png` });
 
-await mobile.getByRole("link", { name: /^About$/ }).click();
+await menu.getByRole("link", { name: /^About$/ }).click();
 await mobile.waitForURL("**/about");
 await mobile.waitForTimeout(1200);
 check("mobile: menu link navigates + closes", mobile.url().endsWith("/about"), mobile.url());

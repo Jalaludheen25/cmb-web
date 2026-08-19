@@ -39,6 +39,16 @@ export function Header() {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
+    // `inert` on everything behind the overlay. Hiding the page visually is not
+    // enough — without this, keyboard and screen-reader users tab straight past
+    // the menu into the footer links sitting underneath it. The header is left
+    // alone deliberately, because it owns the close button.
+    const behind = [
+      document.getElementById("main"),
+      document.querySelector("footer"),
+    ].filter((node): node is HTMLElement => node !== null);
+    behind.forEach((node) => node.setAttribute("inert", ""));
+
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
     };
@@ -46,6 +56,7 @@ export function Header() {
 
     return () => {
       document.body.style.overflow = previousOverflow;
+      behind.forEach((node) => node.removeAttribute("inert"));
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);
@@ -159,6 +170,10 @@ function MenuOverlay({ onClose }: { onClose: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-label="Site menu"
+      // Lenis swallows wheel events document-wide. Without this the overlay's
+      // own scroll container is dead on a trackpad — the menu is taller than a
+      // phone viewport, so that would strand the contact details at the bottom.
+      data-lenis-prevent
       initial={{ clipPath: "inset(0 0 100% 0)" }}
       animate={{ clipPath: "inset(0 0 0% 0)" }}
       exit={{ clipPath: "inset(0 0 100% 0)" }}
