@@ -78,7 +78,10 @@ export function Hero() {
           </span>
           <p className="eyebrow text-sand">{hero.eyebrow}</p>
           <span aria-hidden="true" className="h-px w-8 bg-ink-line" />
-          <p className="eyebrow text-sand-dim">
+          {/* sand-soft rather than sand-dim: this strip sits high in the frame
+              where the floor scrim has not yet taken hold, and the footage is
+              often bright sky behind it. */}
+          <p className="eyebrow text-sand-soft">
             {site.contact.coordinates.lat.toFixed(4)}° N ·{" "}
             {site.contact.coordinates.lng.toFixed(4)}° E
           </p>
