@@ -47,6 +47,12 @@ export function Hero() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-ink via-ink/70 to-transparent"
       />
+      {/* Ceiling gradient — the header sits over whatever the footage is doing
+          up there, and bright sky was washing the navigation out. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-ink/85 to-transparent"
+      />
 
       <motion.div
         style={reduced ? undefined : { y: contentY, opacity: contentOpacity }}

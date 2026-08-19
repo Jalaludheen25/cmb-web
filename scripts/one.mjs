@@ -1,0 +1,12 @@
+import { chromium } from "playwright";
+const url = process.argv[2] ?? "http://localhost:3210/";
+const out = process.argv[3] ?? "shots/check.png";
+const w = Number(process.argv[4] ?? 1512), h = Number(process.argv[5] ?? 945);
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: w, height: h } });
+await p.goto(url, { waitUntil: "networkidle" });
+await p.evaluate(() => document.fonts.ready);
+await p.waitForTimeout(3200);
+await p.screenshot({ path: out });
+await b.close();
+console.log("saved", out);

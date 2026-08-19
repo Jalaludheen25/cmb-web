@@ -29,19 +29,19 @@
   --color-deep-hi: #17514c;
 
   /* ── Fluid display scale. Clamps mean zero breakpoint-juggling. ───────── */
-  --text-mega: clamp(3.25rem, 13vw, 13rem);
+  --text-mega: clamp(3rem, 11vw, 11rem);
   --text-mega--line-height: 0.84;
   --text-mega--letter-spacing: -0.04em;
 
-  --text-d1: clamp(2.75rem, 8vw, 7.5rem);
+  --text-d1: clamp(2.5rem, 8vw, 7.5rem);
   --text-d1--line-height: 0.9;
   --text-d1--letter-spacing: -0.035em;
 
-  --text-d2: clamp(2.25rem, 5.5vw, 4.75rem);
+  --text-d2: clamp(2rem, 5.2vw, 4.5rem);
   --text-d2--line-height: 0.95;
   --text-d2--letter-spacing: -0.03em;
 
-  --text-d3: clamp(1.75rem, 3.4vw, 3rem);
+  --text-d3: clamp(1.625rem, 3.2vw, 2.875rem);
   --text-d3--line-height: 1.04;
   --text-d3--letter-spacing: -0.02em;
 

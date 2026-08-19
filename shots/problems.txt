@@ -1,0 +1,3 @@
+[console:desktop] Failed to load resource: the server responded with a status of 404 (Not Found)
+[console:tablet] Failed to load resource: the server responded with a status of 404 (Not Found)
+[console:mobile] Failed to load resource: the server responded with a status of 404 (Not Found)

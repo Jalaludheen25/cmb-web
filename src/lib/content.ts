@@ -71,8 +71,9 @@ export const navigation = [
 
 export const hero = {
   eyebrow: "Dubai · United Arab Emirates",
-  /** Rendered as separate mask-revealed lines. */
-  headline: ["Move cargo", "like it matters."],
+  /** Rendered as separate mask-revealed lines. Keep each line short — long
+   *  lines wrap inside the mask and blunt the staggered reveal. */
+  headline: ["Move cargo", "like it", "matters."],
   standfirst:
     "From Jebel Ali to any berth, runway or border post that matters to your business — CMB Cargo plans the route, clears the paperwork and answers the phone.",
   primaryCta: { label: "Request a rate", href: "/contact" },
