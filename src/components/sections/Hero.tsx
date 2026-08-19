@@ -38,14 +38,17 @@ export function Hero() {
           src="/video/hero-port.mp4"
           mobileSrc="/video/hero-port-mobile.mp4"
           poster="/video/hero-port-poster.jpg"
-          overlayClassName="media-scrim"
+          // Base tint under the vignette: the footage swings from dark hull to
+          // bright sky, and the gradient alone left the standfirst marginal
+          // against the light frames.
+          overlayClassName="media-scrim bg-ink/35"
         />
       </motion.div>
 
       {/* Extra floor gradient so the ticker rail always has contrast. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-ink via-ink/70 to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-3/4 bg-gradient-to-t from-ink via-ink/85 to-transparent"
       />
       {/* Ceiling gradient — the header sits over whatever the footage is doing
           up there, and bright sky was washing the navigation out. */}

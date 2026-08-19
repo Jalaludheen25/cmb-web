@@ -39,6 +39,51 @@ function arcPoints(from: THREE.Vector3, to: THREE.Vector3) {
   return { points: curve.getPoints(72), curve };
 }
 
+/**
+ * Latitude parallels and longitude meridians, flattened into one segment list.
+ *
+ * A `sphereGeometry` with `wireframe` is the quick way to get lines on a globe,
+ * but it draws the mesh triangulation — it reads as a low-poly 3D model, not as
+ * a chart. Real parallels and meridians read as navigation. Everything is
+ * merged into a single buffer so the whole graticule costs one draw call.
+ */
+function useGraticule(step = 20) {
+  return useMemo(() => {
+    const R = RADIUS * 1.0015;
+    const SEGMENTS = 128;
+    const points: number[] = [];
+
+    const pushRing = (at: (t: number) => [number, number, number]) => {
+      let previous = at(0);
+      for (let i = 1; i <= SEGMENTS; i++) {
+        const current = at((i / SEGMENTS) * Math.PI * 2);
+        points.push(...previous, ...current);
+        previous = current;
+      }
+    };
+
+    // Parallels — poles excluded, they degenerate to a point.
+    for (let lat = -90 + step; lat <= 90 - step; lat += step) {
+      const phi = (lat * Math.PI) / 180;
+      const ringRadius = R * Math.cos(phi);
+      const y = R * Math.sin(phi);
+      pushRing((t) => [Math.cos(t) * ringRadius, y, Math.sin(t) * ringRadius]);
+    }
+
+    // Meridians — each great circle covers two longitudes, so only half a turn.
+    for (let lng = 0; lng < 180; lng += step) {
+      const theta = (lng * Math.PI) / 180;
+      pushRing((t) => [
+        Math.cos(t) * R * Math.cos(theta),
+        Math.sin(t) * R,
+        Math.cos(t) * R * Math.sin(theta),
+      ]);
+    }
+
+    return new Float32Array(points);
+  }, [step]);
+}
+
 /** Evenly distributed surface dots — a data-globe texture with no image cost. */
 function useDotField(count = 1400) {
   return useMemo(() => {
@@ -60,6 +105,7 @@ function GlobeBody({ activeIndex }: { activeIndex: number | null }) {
   const group = useRef<THREE.Group>(null);
   const reduced = useReducedMotion();
   const dots = useDotField();
+  const graticule = useGraticule();
 
   const hubPoint = useMemo(() => toVector(hub.lat, hub.lng), []);
 
@@ -102,10 +148,12 @@ function GlobeBody({ activeIndex }: { activeIndex: number | null }) {
       </mesh>
 
       {/* Graticule */}
-      <mesh>
-        <sphereGeometry args={[RADIUS, 36, 24]} />
-        <meshBasicMaterial color={LINE} wireframe transparent opacity={0.42} />
-      </mesh>
+      <lineSegments>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[graticule, 3]} />
+        </bufferGeometry>
+        <lineBasicMaterial color={LINE} transparent opacity={0.55} depthWrite={false} />
+      </lineSegments>
 
       {/* Surface dot field */}
       <points>
