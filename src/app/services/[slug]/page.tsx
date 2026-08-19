@@ -163,7 +163,10 @@ export default async function ServiceDetailPage({
                   data-cursor="link"
                   className="group/other flex h-full flex-col justify-between gap-8 p-7 transition-colors duration-500 hover:bg-ink"
                 >
-                  <span className="font-mono text-[0.625rem] tracking-[0.2em] text-sand-mute transition-colors group-hover/other:text-brass">
+                  <span
+                    aria-hidden="true"
+                    className="font-mono text-[0.625rem] tracking-[0.2em] text-sand-mute transition-colors group-hover/other:text-brass"
+                  >
                     {other.index}
                   </span>
                   <span>

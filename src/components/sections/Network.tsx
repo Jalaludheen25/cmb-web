@@ -74,6 +74,7 @@ export function Network() {
                     )}
                   >
                     <span
+                      aria-hidden="true"
                       className={cn(
                         "shrink-0 font-mono text-[0.625rem] tracking-[0.16em] transition-colors",
                         active === i ? "text-brass" : "text-sand-mute",

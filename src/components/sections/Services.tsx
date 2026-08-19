@@ -121,7 +121,9 @@ export function Services() {
                   )}
                 >
                   <div className="flex items-start gap-5 sm:gap-8">
+                    {/* Decorative — kept out of the link's accessible name. */}
                     <span
+                      aria-hidden="true"
                       className={cn(
                         "mt-1 shrink-0 font-mono text-[0.6875rem] tracking-[0.16em] transition-colors duration-400",
                         active === i ? "text-brass" : "text-sand-mute",

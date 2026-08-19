@@ -197,7 +197,12 @@ function MenuOverlay({ onClose }: { onClose: () => void }) {
                 onClick={onClose}
                 className="flex items-baseline gap-4 py-5 text-d3 optic-wide text-sand transition-colors hover:text-brass-hi"
               >
-                <span className="font-mono text-[0.625rem] tracking-[0.2em] text-sand-mute">
+                {/* Decorative counter — aria-hidden so the link is announced as
+                    "About", not "03 About". */}
+                <span
+                  aria-hidden="true"
+                  className="font-mono text-[0.625rem] tracking-[0.2em] text-sand-mute"
+                >
                   0{i + 1}
                 </span>
                 {item.label}
