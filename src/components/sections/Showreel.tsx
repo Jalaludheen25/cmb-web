@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { BackgroundVideo } from "@/components/ui/BackgroundVideo";
 import { Reveal } from "@/components/ui/Reveal";
@@ -142,7 +143,14 @@ function Lightbox({ onClose }: { onClose: () => void }) {
     };
   }, [onClose]);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  // Portalled to <body>. This section is `isolate`, which creates a stacking
+  // context — inside it, `z-[80]` is only ever 80 *within the section*, so the
+  // sections that follow in the DOM painted straight over the backdrop and the
+  // page showed through the "modal". A portal is the only reliable fix; raising
+  // the z-index does nothing.
+  return createPortal(
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -191,6 +199,7 @@ function Lightbox({ onClose }: { onClose: () => void }) {
           </svg>
         </button>
       </div>
-    </motion.div>
+    </motion.div>,
+    document.body,
   );
 }

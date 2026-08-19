@@ -178,7 +178,13 @@ function MenuOverlay({ onClose }: { onClose: () => void }) {
       animate={{ clipPath: "inset(0 0 0% 0)" }}
       exit={{ clipPath: "inset(0 0 100% 0)" }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-0 z-[55] overflow-y-auto bg-ink lg:hidden"
+      // Must sit BELOW the header (z-50). The header is transformed for its
+      // hide-on-scroll animation, which makes it a stacking context — so the
+      // close button's own z-index cannot lift it above a higher overlay. Paint
+      // the overlay underneath instead, and the logo and close button stay
+      // reachable. Getting this wrong traps phone users in the menu: there is
+      // no visible close control and no Escape key on a handset.
+      className="fixed inset-0 z-40 overflow-y-auto bg-ink lg:hidden"
     >
       <div className="grain-layer" />
 

@@ -92,7 +92,15 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={fontVariables} suppressHydrationWarning>
+    // `data-scroll-behavior` tells Next the smooth scrolling in globals.css is
+    // deliberate, so it suppresses it during route transitions rather than
+    // animating the jump to the top of each new page.
+    <html
+      lang="en"
+      className={fontVariables}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <body className="antialiased">
         <script
           type="application/ld+json"

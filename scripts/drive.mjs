@@ -96,6 +96,14 @@ const lightboxVideo = await page.evaluate(() => {
 });
 check("showreel: video has controls and plays",
   Boolean(lightboxVideo && lightboxVideo.controls && !lightboxVideo.paused));
+
+// The backdrop must actually occlude the page. A `z-index` inside a stacking
+// context looks correct in code and lets content paint straight through.
+const occludes = await page.evaluate(() => {
+  const el = document.elementFromPoint(80, window.innerHeight - 60);
+  return Boolean(el?.closest('[role="dialog"]'));
+});
+check("showreel: backdrop occludes page content", occludes);
 await page.screenshot({ path: `${OUT}/04-lightbox.png` });
 
 await page.keyboard.press("Escape");
@@ -153,6 +161,16 @@ const menu = mobile.getByRole("dialog", { name: /Site menu/i });
 check("mobile: menu overlay opens", await menu.isVisible());
 await mobile.screenshot({ path: `${OUT}/07-mobile-menu.png` });
 
+// The close button must remain reachable ON TOP of the overlay — a phone has
+// no Escape key, so if this is buried the user is trapped in the menu.
+const closeBtn = mobile.getByRole("button", { name: /Close menu/i });
+check("mobile: close button stays above overlay", await closeBtn.isVisible());
+await closeBtn.click({ timeout: 5000 });
+await mobile.waitForTimeout(900);
+check("mobile: close button dismisses menu", (await menu.count()) === 0);
+
+await mobile.getByRole("button", { name: /Open menu/i }).click();
+await mobile.waitForTimeout(1100);
 await menu.getByRole("link", { name: /^About$/ }).click();
 await mobile.waitForURL("**/about");
 await mobile.waitForTimeout(1200);

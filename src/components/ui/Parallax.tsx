@@ -36,10 +36,14 @@ export function Parallax({
   const shift = `${speed * 100}%`;
   const y = useTransform(scrollYProgress, [0, 1], [`-${shift}`, shift]);
 
+  // Both wrappers are `relative h-full w-full` so a `next/image` with `fill`
+  // always has a properly positioned, correctly sized direct parent — including
+  // on the reduced-motion branch, where there is no transform to establish a
+  // containing block.
   if (reduced) {
     return (
       <div className={cn("overflow-hidden", className)}>
-        <div className={className_inner}>{children}</div>
+        <div className={cn("relative h-full w-full", className_inner)}>{children}</div>
       </div>
     );
   }
@@ -48,7 +52,7 @@ export function Parallax({
     <div ref={ref} className={cn("overflow-hidden", className)}>
       <motion.div
         style={{ y, scale: 1 + speed * 2.2 }}
-        className={cn("h-full w-full will-change-transform", className_inner)}
+        className={cn("relative h-full w-full will-change-transform", className_inner)}
       >
         {children}
       </motion.div>
