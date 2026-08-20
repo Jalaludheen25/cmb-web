@@ -25,6 +25,7 @@ export function BackgroundVideo({
   src,
   mobileSrc,
   poster,
+  mobilePoster,
   className,
   videoClassName,
   overlayClassName,
@@ -32,6 +33,9 @@ export function BackgroundVideo({
   src: string;
   mobileSrc?: string;
   poster: string;
+  /** Use when `mobileSrc` is different *footage* rather than a smaller encode —
+   *  otherwise the still and the clip that fades in show different scenes. */
+  mobilePoster?: string;
   className?: string;
   videoClassName?: string;
   overlayClassName?: string;
@@ -47,6 +51,7 @@ export function BackgroundVideo({
   // Derived during render — no effect, so there is no frame where the wrong
   // encode is attached to the element.
   const source = reduced || frugal ? null : narrow && mobileSrc ? mobileSrc : src;
+  const still = narrow && mobilePoster ? mobilePoster : poster;
 
   // Play while on screen, pause once past. Also what kicks off the download.
   useEffect(() => {
@@ -77,7 +82,7 @@ export function BackgroundVideo({
       {/* Poster layer — always present, never removed, so there is no flash. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={poster}
+        src={still}
         alt=""
         aria-hidden="true"
         className={cn("absolute inset-0 h-full w-full object-cover", videoClassName)}
@@ -86,7 +91,7 @@ export function BackgroundVideo({
       {source && (
         <video
           ref={videoRef}
-          poster={poster}
+          poster={still}
           src={source}
           muted
           loop

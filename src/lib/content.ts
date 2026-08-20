@@ -78,6 +78,22 @@ export const hero = {
     "From Jebel Ali to any berth, runway or border post that matters to your business — CMB Cargo plans the route, clears the paperwork and answers the phone.",
   primaryCta: { label: "Request a rate", href: "/contact" },
   secondaryCta: { label: "Our services", href: "/services" },
+
+  /**
+   * Background rotation. The clips play in sequence and crossfade into one
+   * another, then loop — sunset departure, night harbour, terminal at work.
+   *
+   * Only the first clip is fetched on load; each later one is pulled during
+   * playback of the one before it, so adding a fourth costs nothing up front.
+   * `poster` is a frame from the first clip, so the still and the opening frame
+   * match and there is no visible jump when playback starts.
+   */
+  poster: "/video/hero-1-poster.jpg",
+  clips: [
+    { src: "/video/hero-1.mp4", mobileSrc: "/video/hero-1-mobile.mp4" },
+    { src: "/video/hero-2.mp4", mobileSrc: "/video/hero-2-mobile.mp4" },
+    { src: "/video/hero-3.mp4", mobileSrc: "/video/hero-3-mobile.mp4" },
+  ],
   /** Live ticker along the base of the hero. */
   ticker: [
     { label: "Sea", value: "FCL · LCL · Breakbulk" },

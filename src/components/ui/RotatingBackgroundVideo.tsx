@@ -43,7 +43,7 @@ export function RotatingBackgroundVideo({
   overlayClassName,
   crossfadeMs = 900,
 }: {
-  clips: Clip[];
+  clips: readonly Clip[];
   poster: string;
   className?: string;
   videoClassName?: string;

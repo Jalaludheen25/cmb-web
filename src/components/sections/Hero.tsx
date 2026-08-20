@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { BackgroundVideo } from "@/components/ui/BackgroundVideo";
+import { RotatingBackgroundVideo } from "@/components/ui/RotatingBackgroundVideo";
 import { Button } from "@/components/ui/Button";
 import { RevealText } from "@/components/ui/RevealText";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -34,13 +34,12 @@ export function Hero() {
         style={reduced ? undefined : { y: mediaY, scale: mediaScale }}
         className="absolute inset-0 -z-10"
       >
-        <BackgroundVideo
-          src="/video/hero-port.mp4"
-          mobileSrc="/video/hero-port-mobile.mp4"
-          poster="/video/hero-port-poster.jpg"
-          // Base tint under the vignette: the footage swings from dark hull to
-          // bright sky, and the gradient alone left the standfirst marginal
-          // against the light frames.
+        <RotatingBackgroundVideo
+          clips={hero.clips}
+          poster={hero.poster}
+          // Base tint under the vignette. The rotation runs from a bright
+          // sunset departure through two night scenes, so the scrim has to hold
+          // the standfirst legible across a wide swing in exposure.
           overlayClassName="media-scrim bg-ink/35"
         />
       </motion.div>
