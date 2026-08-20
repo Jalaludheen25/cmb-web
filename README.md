@@ -23,7 +23,9 @@ npm run dev          # http://localhost:3000
 | `npm run start` | Serve the production build |
 | `npm run typecheck` | TypeScript, no emit |
 | `npm run lint` | ESLint |
-| `npm run shots` | Visual QA — drives a real browser across 3 breakpoints and 6 pages, capturing screenshots and reporting console errors, failed requests and horizontal overflow. Needs the site running; see below. |
+| `npm run shots` | Visual QA — drives a real browser across 3 breakpoints and 8 pages, capturing screenshots and reporting console errors, failed requests and horizontal overflow. Needs the site running; see below. |
+| `npm run drive` | Interaction QA — clicks through the real UI (service hover, 3D globe, video lightbox, contact form, mobile menu) and asserts 17 behaviours. Catches the class of bug a screenshot cannot: stacking contexts, focus traps, unreachable close buttons |
+| `npm run shot` | One-off capture: `npm run shot -- <url> <out.png> [w] [h] [selector]` |
 | `npm run contrast` | Prints WCAG contrast ratios for every small-text colour pairing in the palette |
 
 ```bash
@@ -143,7 +145,7 @@ src/
   app/
     layout.tsx              Fonts, metadata, JSON-LD, chrome
     page.tsx                Home — section order is a deliberate rhythm
-    services/               Index + [slug] detail (SSG, 6 routes)
+    services/               Index + [slug] detail (SSG, 8 routes)
     about/  contact/
     api/enquiry/route.ts    Form intake — fails loudly if unconfigured
     sitemap.ts  robots.ts  not-found.tsx
@@ -159,6 +161,35 @@ src/
 
 **All copy lives in `src/lib/content.ts`.** No component hard-codes a string, so
 the client can revise wording without touching layout or animation code.
+
+### Services
+
+Eight, in this order — the array order in `content.ts` *is* the display order,
+and it drives the home list, the services index, the footer, the mobile menu,
+`generateStaticParams` and the sitemap:
+
+| # | Service | Slug |
+| --- | --- | --- |
+| 01 | Air Freight | `air-freight` |
+| 02 | Sea Freight (FCL/LCL) | `sea-freight` |
+| 03 | Land Transport | `land-transport` |
+| 04 | Car Export | `car-export` |
+| 05 | Import/Export Customs Clearance | `customs-clearance` |
+| 06 | UPB / Personal & Commercial Cargo | `upb-cargo` |
+| 07 | Warehousing & Distribution | `warehousing` |
+| 08 | Project & Heavy Lift | `project-cargo` |
+
+Two gotchas when editing this list:
+
+- **`index` is a manual string** (`"01"`…`"08"`) shown in the UI. Renumber the
+  rest if you insert or reorder.
+- **`enquiryTypes` is validated server-side.** `app/api/enquiry/route.ts`
+  rejects any submission whose enquiry type is not in that array, so the two
+  must be edited together or the contact form starts 422-ing silently.
+
+Service copy for all eight is written to fit the house voice, but the specifics
+(gateways, transit claims, capabilities) are informed invention — have the
+client confirm them along with everything in the table above.
 
 ---
 
@@ -184,7 +215,7 @@ momentum scrolling, which feels better than any polyfill.
 
 ## Media
 
-25 photographs and 3 video encodes in `public/`, all sourced from Pexels under
+27 photographs and 3 video encodes in `public/`, all sourced from Pexels under
 the [Pexels License](https://www.pexels.com/license/) — free for commercial use,
 no attribution required. Replace with the client's own photography when
 available; real facilities always outperform stock.

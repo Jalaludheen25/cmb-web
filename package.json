@@ -9,7 +9,9 @@
     "lint": "eslint",
     "shots": "node scripts/shoot.mjs",
     "contrast": "node scripts/contrast.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "drive": "node scripts/drive.mjs",
+    "shot": "node scripts/shot.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
