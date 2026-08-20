@@ -43,7 +43,18 @@ export default async function ServiceDetailPage({
   const service = services.find((item) => item.slug === slug);
   if (!service) notFound();
 
-  const others = services.filter((item) => item.slug !== service.slug);
+  // The next four services in sequence, wrapping around the list.
+  //
+  // Deliberately four rather than "all the others": the grid below draws its
+  // hairlines with `gap-px` over a background, so any row that is not completely
+  // filled leaves empty cells showing that background as pale rectangles. Four
+  // divides evenly into both the 2- and 4-column layouts at every breakpoint,
+  // and it stays correct however many services are added to the list.
+  const currentIndex = services.findIndex((item) => item.slug === service.slug);
+  const others = Array.from(
+    { length: Math.min(4, services.length - 1) },
+    (_, i) => services[(currentIndex + 1 + i) % services.length],
+  );
 
   const serviceSchema = {
     "@context": "https://schema.org",
@@ -150,12 +161,17 @@ export default async function ServiceDetailPage({
       <section className="bay bg-ink-soft" aria-labelledby="other-heading">
         <div className="shell">
           <Reveal>
-            <h2 id="other-heading" className="text-d3 optic-wide text-sand">
-              Other services
-            </h2>
+            <div className="flex flex-wrap items-center justify-between gap-6">
+              <h2 id="other-heading" className="text-d3 optic-wide text-sand">
+                Other services
+              </h2>
+              <Button href="/services" variant="outline" size="sm">
+                All {services.length} services
+              </Button>
+            </div>
           </Reveal>
 
-          <RevealGroup as="ul" className="mt-10 grid gap-px overflow-hidden rounded-sm bg-ink-line sm:grid-cols-2 lg:grid-cols-5">
+          <RevealGroup as="ul" className="mt-10 grid gap-px overflow-hidden rounded-sm bg-ink-line sm:grid-cols-2 lg:grid-cols-4">
             {others.map((other) => (
               <RevealItem as="li" key={other.slug} className="bg-ink-soft">
                 <Link

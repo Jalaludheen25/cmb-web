@@ -26,8 +26,8 @@ export function Services() {
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
             eyebrow="What we do"
-            lines={["Six disciplines,", "one file owner."]}
-            standfirst="Freight forwarding is only as good as the handovers inside it. We run all six in-house so there are none."
+            lines={["Eight disciplines,", "one file owner."]}
+            standfirst="Freight forwarding is only as good as the handovers inside it. We run all eight in-house so there are none."
             as="h2"
             headingClassName="text-d2"
           />

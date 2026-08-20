@@ -101,6 +101,11 @@ export const manifesto = {
 
 /* ─────────────────────────────────────────────────────────────────────────
    SERVICES
+
+   Array order IS display order — it drives the home list, the services index,
+   the footer, the mobile menu and the sitemap. The first six are the client's
+   stated line-up, in the order they gave them; warehousing and project cargo
+   follow as supporting capabilities.
    ───────────────────────────────────────────────────────────────────────── */
 
 export type Service = {
@@ -119,43 +124,8 @@ export type Service = {
 
 export const services: Service[] = [
   {
-    slug: "sea-freight",
-    index: "01",
-    title: "Sea Freight",
-    short: "FCL, LCL, breakbulk and chartering through the Gulf's deep-water gateways.",
-    summary:
-      "Weekly consolidations out of Jebel Ali and direct allocations with carriers on the Asia, Europe and East Africa trades — with the vessel schedules checked by a human before we quote them.",
-    image: "/images/services/sea-freight.jpg",
-    capabilities: [
-      "Full container load (FCL)",
-      "Groupage & LCL consolidation",
-      "Breakbulk and RoRo",
-      "Vessel chartering",
-      "Reefer & controlled atmosphere",
-      "Port-to-door delivery",
-    ],
-    detail: {
-      intro:
-        "Ocean is still where the economics live. We hold space with carriers on the corridors our clients actually use, and we would rather tell you a sailing is tight than book you onto one that will roll.",
-      points: [
-        {
-          title: "Gateway coverage",
-          body: "Jebel Ali, Khalifa Port, Port Rashid, Sharjah and Fujairah — plus feeder connectivity across the Upper Gulf.",
-        },
-        {
-          title: "Consolidation programme",
-          body: "Fixed-day LCL departures on the main trades, so part-load shippers get a schedule they can plan production around.",
-        },
-        {
-          title: "Cargo that will not fit a box",
-          body: "Breakbulk, flat-rack and open-top handling with lift studies completed before the booking is confirmed.",
-        },
-      ],
-    },
-  },
-  {
     slug: "air-freight",
-    index: "02",
+    index: "01",
     title: "Air Freight",
     short: "Time-critical uplift through Al Maktoum, Dubai International and Abu Dhabi.",
     summary:
@@ -184,6 +154,41 @@ export const services: Service[] = [
         {
           title: "Cold chain",
           body: "Validated packaging, active containers and airside handling for pharmaceutical and perishable consignments.",
+        },
+      ],
+    },
+  },
+  {
+    slug: "sea-freight",
+    index: "02",
+    title: "Sea Freight (FCL/LCL)",
+    short: "Full containers, groupage and breakbulk through the Gulf's deep-water gateways.",
+    summary:
+      "Weekly LCL consolidations out of Jebel Ali and direct FCL allocations with carriers on the Asia, Europe and East Africa trades — with the vessel schedules checked by a human before we quote them.",
+    image: "/images/services/sea-freight.jpg",
+    capabilities: [
+      "Full container load (FCL)",
+      "Groupage & LCL consolidation",
+      "Breakbulk and RoRo",
+      "Vessel chartering",
+      "Reefer & controlled atmosphere",
+      "Port-to-door delivery",
+    ],
+    detail: {
+      intro:
+        "Ocean is still where the economics live. We hold space with carriers on the corridors our clients actually use, and we would rather tell you a sailing is tight than book you onto one that will roll.",
+      points: [
+        {
+          title: "FCL where volume justifies it",
+          body: "Direct allocations on the main trades, with equipment availability checked at origin before the booking is confirmed.",
+        },
+        {
+          title: "LCL on a schedule you can plan around",
+          body: "Fixed-day groupage departures, so part-load shippers are not waiting for a box to fill before their cargo moves.",
+        },
+        {
+          title: "Cargo that will not fit a box",
+          body: "Breakbulk, flat-rack and open-top handling with lift studies completed before the booking is confirmed.",
         },
       ],
     },
@@ -224,8 +229,113 @@ export const services: Service[] = [
     },
   },
   {
-    slug: "warehousing",
+    slug: "car-export",
     index: "04",
+    title: "Car Export",
+    short: "Vehicle export from the UAE by RoRo or container, with the documents done first.",
+    summary:
+      "Dubai is one of the world's great vehicle re-export hubs. We move cars, 4x4s, light plant and motorcycles out of Jebel Ali and Sharjah to Africa, the CIS and the wider Middle East — export declaration, de-registration and title handled before the vehicle reaches the port.",
+    image: "/images/services/car-export.jpg",
+    capabilities: [
+      "RoRo vessel bookings",
+      "Containerised vehicle loading",
+      "Export declaration & de-registration",
+      "Certificate of Origin & title transfer",
+      "Marine insurance",
+      "Inland collection to port",
+    ],
+    detail: {
+      intro:
+        "Almost every vehicle export that goes wrong goes wrong on paper, not on the quay. A car held because the chassis number on the certificate does not match the one stamped on the vehicle will cost more in storage than the freight ever did.",
+      points: [
+        {
+          title: "RoRo or container",
+          body: "RoRo for volume and simplicity; containerised loading for high-value units, for spares packed alongside, or for destinations without a RoRo call. We price both and tell you which is actually cheaper landed.",
+        },
+        {
+          title: "Documents verified against the metal",
+          body: "Export declaration, de-registration, title transfer and Certificate of Origin prepared and then checked against the physical vehicle — chassis, engine, specification and mileage.",
+        },
+        {
+          title: "Destination rules, before you buy",
+          body: "Age limits, left-hand-drive restrictions, emissions standards and pre-shipment inspection requirements differ sharply by market. We flag them at the quotation stage, not after the vehicle is on the water.",
+        },
+      ],
+    },
+  },
+  {
+    slug: "customs-clearance",
+    index: "05",
+    title: "Import/Export Customs Clearance",
+    short: "UAE brokerage, classification and free-zone movements handled properly.",
+    summary:
+      "Licensed clearance across UAE customs authorities in both directions, with HS classification, duty and VAT treatment and restricted-goods permits reviewed before your cargo is standing on a quay.",
+    image: "/images/services/customs.jpg",
+    capabilities: [
+      "Import, export & transit declarations",
+      "Free-zone in / out movements",
+      "HS classification & duty advisory",
+      "Restricted & controlled goods permits",
+      "Certificate of origin & attestation",
+      "Post-clearance audit support",
+    ],
+    detail: {
+      intro:
+        "Most demurrage is caused by paperwork, not by ships. We front-load the compliance work so the clearance itself is uneventful.",
+      points: [
+        {
+          title: "Pre-alert discipline",
+          body: "Documents reviewed against the declaration before arrival, so discrepancies surface early and cheaply.",
+        },
+        {
+          title: "Classification you can defend",
+          body: "Considered HS coding with written rationale — the difference between a smooth audit and a retrospective bill.",
+        },
+        {
+          title: "Permits and approvals",
+          body: "Coordination with the relevant UAE authorities for controlled, regulated and dual-use commodities.",
+        },
+      ],
+    },
+  },
+  {
+    slug: "upb-cargo",
+    index: "06",
+    title: "UPB / Personal & Commercial Cargo",
+    short: "Unaccompanied personal baggage, household effects and part-load commercial consignments.",
+    summary:
+      "A family relocating out of the Emirates, a single pallet of samples, or a few boxes that need to reach a relative — small consignments get the same documentation discipline as a full container.",
+    image: "/images/services/upb-cargo.jpg",
+    capabilities: [
+      "Unaccompanied personal baggage (UPB)",
+      "Household goods & relocations",
+      "Excess baggage by air or sea",
+      "Part-load commercial consignments",
+      "Export packing & crating",
+      "Door-to-door delivery",
+    ],
+    detail: {
+      intro:
+        "Small shipments are where forwarders quietly cut corners, because the revenue does not justify the attention. They are also where a mistake hurts most — a household is not a replaceable commodity, and the person waiting at the other end is not a purchasing department.",
+      points: [
+        {
+          title: "Personal effects, cleared correctly",
+          body: "UPB and household goods declared under the correct personal-effects provisions, with a valued inventory that satisfies customs at both ends rather than one written in a hurry.",
+        },
+        {
+          title: "Packing that survives the journey",
+          body: "Export-grade cartons, purpose-built crating for fragile and high-value items, and proper wrapping for furniture. Most damage happens long before the cargo reaches a vessel.",
+        },
+        {
+          title: "Commercial part-loads",
+          body: "Samples, spares and small trade consignments consolidated onto our scheduled groupage departures instead of waiting for a full container to justify itself.",
+        },
+      ],
+    },
+  },
+  {
+    slug: "warehousing",
+    index: "07",
     title: "Warehousing & Distribution",
     short: "Bonded, ambient and temperature-controlled space with real inventory visibility.",
     summary:
@@ -259,43 +369,8 @@ export const services: Service[] = [
     },
   },
   {
-    slug: "customs-clearance",
-    index: "05",
-    title: "Customs & Compliance",
-    short: "UAE brokerage, classification and free-zone movements handled properly.",
-    summary:
-      "Licensed clearance across UAE customs authorities, with HS classification, duty and VAT treatment and restricted-goods permits reviewed before your cargo is standing on a quay.",
-    image: "/images/services/customs.jpg",
-    capabilities: [
-      "Import, export & transit declarations",
-      "Free-zone in / out movements",
-      "HS classification & duty advisory",
-      "Restricted & controlled goods permits",
-      "Certificate of origin & attestation",
-      "Post-clearance audit support",
-    ],
-    detail: {
-      intro:
-        "Most demurrage is caused by paperwork, not by ships. We front-load the compliance work so the clearance itself is uneventful.",
-      points: [
-        {
-          title: "Pre-alert discipline",
-          body: "Documents reviewed against the declaration before arrival, so discrepancies surface early and cheaply.",
-        },
-        {
-          title: "Classification you can defend",
-          body: "Considered HS coding with written rationale — the difference between a smooth audit and a retrospective bill.",
-        },
-        {
-          title: "Permits and approvals",
-          body: "Coordination with the relevant UAE authorities for controlled, regulated and dual-use commodities.",
-        },
-      ],
-    },
-  },
-  {
     slug: "project-cargo",
-    index: "06",
+    index: "08",
     title: "Project & Heavy Lift",
     short: "Out-of-gauge, high-value and engineered moves for energy and infrastructure.",
     summary:
@@ -525,12 +600,17 @@ export const about = {
    CONTACT FORM
    ───────────────────────────────────────────────────────────────────────── */
 
+/** Mirrored by the server-side validation in `app/api/enquiry/route.ts` —
+ *  a submission whose enquiry type is not in this list is rejected, so the two
+ *  must be edited together. */
 export const enquiryTypes = [
-  "Sea freight",
   "Air freight",
+  "Sea freight (FCL/LCL)",
   "Land transport",
+  "Car export",
+  "Import/export customs clearance",
+  "Personal & commercial cargo (UPB)",
   "Warehousing",
-  "Customs clearance",
   "Project cargo",
   "Something else",
 ] as const;

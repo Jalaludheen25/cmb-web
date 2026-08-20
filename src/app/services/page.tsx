@@ -20,7 +20,7 @@ export default function ServicesPage() {
       <PageHero
         eyebrow="Capability"
         lines={["Everything", "under one file."]}
-        standfirst={`Six disciplines run in-house, so a shipment never changes hands between companies that blame each other. ${site.name} owns the whole chain.`}
+        standfirst={`Eight disciplines run in-house, so a shipment never changes hands between companies that blame each other. ${site.name} owns the whole chain.`}
         image="/images/hero/hero-alt.jpg"
         breadcrumb={[
           { label: "Home", href: "/" },
