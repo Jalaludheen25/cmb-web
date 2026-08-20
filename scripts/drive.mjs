@@ -50,7 +50,7 @@ const hero = await page.evaluate(() => {
 check("home: hero video playing", Boolean(hero && !hero.paused && hero.t > 0),
   hero ? `${hero.w}px @ ${hero.t.toFixed(1)}s` : "no video");
 
-// ── 3. Hovering a service row swaps the sticky stage ────────────────────────
+// ── 3. Hovering a service row swaps the sticky stage (row 4 = Car Export) ───
 await page.locator("#services").scrollIntoViewIfNeeded();
 await page.waitForTimeout(900);
 const rows = page.locator("#services ul li a");
@@ -61,7 +61,7 @@ const activeImg = await page.evaluate(() => {
   const shown = panels.find((p) => parseFloat(getComputedStyle(p).opacity) > 0.9);
   return shown?.querySelector("img")?.getAttribute("src") ?? "";
 });
-check("services: hover swaps stage image", activeImg.includes("warehousing"),
+check("services: hover swaps stage image", activeImg.includes("car-export"),
   decodeURIComponent(activeImg).split("/").pop()?.slice(0, 40));
 await page.screenshot({ path: `${OUT}/02-services-hover.png` });
 

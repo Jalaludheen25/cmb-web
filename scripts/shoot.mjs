@@ -26,6 +26,8 @@ const PAGES = [
   { slug: "home", url: "/" },
   { slug: "services", url: "/services" },
   { slug: "service-sea", url: "/services/sea-freight" },
+  { slug: "service-upb", url: "/services/upb-cargo" },
+  { slug: "service-car", url: "/services/car-export" },
   { slug: "about", url: "/about" },
   { slug: "contact", url: "/contact" },
   { slug: "notfound", url: "/this-page-does-not-exist" },
