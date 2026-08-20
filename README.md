@@ -25,6 +25,7 @@ npm run dev          # http://localhost:3000
 | `npm run lint` | ESLint |
 | `npm run shots` | Visual QA — drives a real browser across 3 breakpoints and 8 pages, capturing screenshots and reporting console errors, failed requests and horizontal overflow. Needs the site running; see below. |
 | `npm run drive` | Interaction QA — clicks through the real UI (service hover, 3D globe, video lightbox, contact form, mobile menu) and asserts 17 behaviours. Catches the class of bug a screenshot cannot: stacking contexts, focus traps, unreachable close buttons |
+| `npm run rotation` | Verifies the hero video rotation — cycles through every clip, no blank frame at the handoff, loading stays lazy |
 | `npm run shot` | One-off capture: `npm run shot -- <url> <out.png> [w] [h] [selector]` |
 | `npm run contrast` | Prints WCAG contrast ratios for every small-text colour pairing in the palette |
 
@@ -215,21 +216,64 @@ momentum scrolling, which feels better than any polyfill.
 
 ## Media
 
-27 photographs and 3 video encodes in `public/`, all sourced from Pexels under
-the [Pexels License](https://www.pexels.com/license/) — free for commercial use,
-no attribution required. Replace with the client's own photography when
-available; real facilities always outperform stock.
+27 photographs in `public/images`, sourced from Pexels under the
+[Pexels License](https://www.pexels.com/license/) — free for commercial use, no
+attribution required. Replace with the client's own photography when available;
+real facilities always outperform stock.
 
-Video is transcoded to two encodes each (1920 and 1080 wide, H.264, no audio,
-`faststart`). `BackgroundVideo` decides at runtime whether to fetch any of it:
+**Video is client-supplied.** The hero rotation and the mobile showreel come
+from footage the client provided (`0_Ship_Cargo.mp4`, `v1.mp4`, `v2.mp4`); the
+desktop showreel is still Pexels stock.
+
+Every clip is transcoded to two encodes (1920 and 1080 wide, H.264, no audio,
+`faststart`) and the originals are never served.
+
+### ⚠️ Raw masters are still in `public/`
+
+`0_Ship_Cargo.mp4` (15 MB), `v1.mp4` (7 MB) and `v2.mp4` (17 MB) are the
+untouched 4K masters. Nothing references them, but **anything in `public/` is
+deployed and publicly downloadable**, so that is 39 MB of dead weight shipped on
+every build. They were left in place because they may be the only copies — move
+them somewhere outside `public/` (or delete them once you have them archived):
+
+```bash
+mkdir -p media-source && mv public/video/{0_Ship_Cargo,v1,v2}.mp4 media-source/
+```
+
+To regenerate the web encodes after replacing footage, see the ffmpeg recipe in
+the git history or re-run the same `scale`/`crf 27` (desktop) and `crf 31`
+(mobile) settings. Note `0_Ship_Cargo.mp4` carries **two video streams**, so it
+needs an explicit `-map 0:v:0`.
+
+### Hero rotation
+
+`RotatingBackgroundVideo` plays the three hero clips in sequence, crossfading
+between them, then loops. It uses two stacked `<video>` elements: one plays
+while the other sits paused on the *next* clip, already buffered. Swapping `src`
+on a single element instead would tear down the decoder and show a black frame
+every five seconds.
+
+Only the playing clip and the one queued behind it are ever fetched, so the
+initial load is ~2 MB regardless of how many clips are in the rotation. Verify
+with `npm run rotation`, which asserts the cycle advances through every clip,
+that no sample frame is blank, and that loading stays lazy.
+
+To change the rotation, edit `hero.clips` in `src/lib/content.ts` — add, remove
+or reorder freely; nothing else needs to change.
+
+### Loading discipline
+
+Both video components decide at runtime whether to fetch anything at all:
 
 - reduced motion → poster only, video never requested
 - `Save-Data` or a 2G connection → poster only
 - narrow viewport → the smaller encode
 - scrolled out of view → paused, so it stops burning battery
 
-The poster image renders immediately and is never removed, so there is no flash
-and no layout shift.
+The poster renders immediately and is never removed, so there is no flash and no
+layout shift. Where a mobile variant is *different footage* rather than a
+smaller encode — as the showreel now is — pass `mobilePoster` so the still and
+the clip that fades in show the same scene.
 
 ---
 
