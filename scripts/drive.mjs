@@ -43,12 +43,17 @@ check("home: H1 revealed", h1Shown, h1Text.slice(0, 28));
 await page.screenshot({ path: `${OUT}/01-home.png` });
 
 // ── 2. Hero video is actually playing ───────────────────────────────────────
+// The hero rotates across two stacked <video> slots, so "the first video" is
+// not necessarily the one on screen — assert that *some* slot is playing.
 const hero = await page.evaluate(() => {
-  const v = document.querySelector("video");
-  return v ? { paused: v.paused, t: v.currentTime, w: v.videoWidth } : null;
+  const vids = [...document.querySelectorAll("section video")];
+  const live = vids.find((v) => !v.paused && v.currentTime > 0);
+  return live
+    ? { t: live.currentTime, w: live.videoWidth, src: live.currentSrc.split("/").pop(), slots: vids.length }
+    : null;
 });
-check("home: hero video playing", Boolean(hero && !hero.paused && hero.t > 0),
-  hero ? `${hero.w}px @ ${hero.t.toFixed(1)}s` : "no video");
+check("home: hero video playing", Boolean(hero),
+  hero ? `${hero.src} ${hero.w}px @ ${hero.t.toFixed(1)}s (${hero.slots} slots)` : "nothing playing");
 
 // ── 3. Hovering a service row swaps the sticky stage (row 4 = Car Export) ───
 await page.locator("#services").scrollIntoViewIfNeeded();

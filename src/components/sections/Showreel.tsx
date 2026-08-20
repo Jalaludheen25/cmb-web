@@ -23,10 +23,13 @@ export function Showreel() {
       <div className="shell bay">
         <div className="relative overflow-hidden rounded-sm">
           <div className="relative aspect-[4/5] w-full sm:aspect-[16/10] lg:aspect-[21/9]">
+            {/* Below 820px this plays different footage, not merely a smaller
+                encode — so it carries its own poster to match. */}
             <BackgroundVideo
               src="/video/showreel-sea.mp4"
               mobileSrc="/video/showreel-sea-mobile.mp4"
               poster="/video/showreel-sea-poster.jpg"
+              mobilePoster="/video/showreel-sea-mobile-poster.jpg"
               overlayClassName="bg-ink/45"
             />
 

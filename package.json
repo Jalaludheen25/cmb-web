@@ -11,7 +11,8 @@
     "contrast": "node scripts/contrast.mjs",
     "typecheck": "tsc --noEmit",
     "drive": "node scripts/drive.mjs",
-    "shot": "node scripts/shot.mjs"
+    "shot": "node scripts/shot.mjs",
+    "rotation": "node scripts/rotation.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
