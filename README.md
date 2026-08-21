@@ -151,6 +151,17 @@ Gulf green used sparingly at block scale.
 Every small-text pairing clears **WCAG AA (4.5:1)** — verify with
 `npm run contrast` after any palette change.
 
+> **Text over video is a separate problem.** `npm run contrast` checks flat
+> colour pairings only; it cannot see the hero, where the background is moving
+> footage under three stacked scrims. If you retune those, measure the real
+> thing: screenshot the hero with `section .shell` set to `visibility:hidden`,
+> sample the band where the standfirst sits, and compute the ratio against
+> `sand-soft`. Check **every breakpoint** — the standfirst sits ~79% down the
+> hero on desktop but ~57% on a phone, so one gradient hits the two positions at
+> very different strengths, and a change that looks fine on a laptop can put
+> mobile below AA. The floor gradient is deliberately breakpoint-aware for
+> exactly this reason.
+
 ### Type scale
 
 Fluid `clamp()` tokens — `text-mega`, `text-d1`, `text-d2`, `text-d3`,
@@ -259,21 +270,25 @@ the desktop showreel is still Pexels stock.
 
 ### ⚠️ The hero video is served uncompressed, by request
 
-`public/video/hero-main.mp4` is a **byte-identical copy** of the supplied
-`Cmb Hero Page Background Video 01.mp4` (2560×1440, 30 fps, 7.5 s, **9.1 MB**),
+`public/video/hero-colour.mp4` is a **byte-identical copy** of the supplied
+`Hero Page Background Colour.mp4` (2560×1440, 30 fps, 7.5 s, **10.3 MB**),
 verified by SHA-256. It is not re-encoded, and there is deliberately no mobile
-variant — **phones download the full 9.1 MB**.
+variant — **phones download the full 10.3 MB**.
 
-That is roughly 7× the previous hero and it is the single largest thing on the
-site. Three mitigations are already in place: the poster paints immediately so
-nothing waits on it, playback only starts once the hero is on screen, and
-`Save-Data` / 2G visitors never fetch it at all. If the weight becomes a
-problem, a visually indistinguishable encode is one command:
+It is the single largest thing on the site. Three mitigations are in place: the
+poster paints immediately so nothing waits on it, playback only starts once the
+hero is on screen, and `Save-Data` / 2G visitors never fetch it at all. If the
+weight becomes a problem, a visually indistinguishable encode is one command:
 
 ```bash
-ffmpeg -i public/video/hero-main.mp4 -vf "scale=1920:-2" -c:v libx264 \
-  -crf 24 -preset slow -movflags +faststart -an public/video/hero-main-web.mp4
+ffmpeg -i public/video/hero-colour.mp4 -vf "scale=1920:-2" -c:v libx264 \
+  -crf 24 -preset slow -movflags +faststart -an public/video/hero-colour-web.mp4
 ```
+
+**Name the file, don't overwrite it.** `next.config.ts` serves `/video/*` with a
+30-day `max-age`, so swapping footage in at an existing URL leaves returning
+visitors watching the old clip until their cache expires. Each new hero gets a
+new filename; `hero.clips` in `content.ts` is the only thing to repoint.
 
 The file also carries an **AAC audio track**. It is left in place (removing it
 would mean rewriting the file) and is harmless — the player is `muted` — but it
@@ -281,14 +296,25 @@ is bytes nobody hears. `-c copy -an` strips it losslessly if you want them back.
 
 ### ⚠️ Raw masters are still in `public/`
 
-`0_Ship_Cargo.mp4` (15 MB), `v1.mp4` (7 MB) and `v2.mp4` (17 MB) are untouched
-4K masters from an earlier round. Nothing references them any more, but
-**anything in `public/` is deployed and publicly downloadable**, so that is
-39 MB of dead weight on every build. They were left in place because they may be
-the only copies — move them out (or delete once archived):
+Five files in `public/video` are no longer referenced by anything:
+
+| File | Size | What it is |
+| --- | --- | --- |
+| `hero-main.mp4` | 9.1 MB | The **previous hero** (`Cmb Hero Page Background Video 01.mp4`). This is the only copy left in the repo |
+| `hero-main-poster.jpg` | 0.2 MB | Its poster frame |
+| `0_Ship_Cargo.mp4` | 15 MB | 4K master from the rotation round |
+| `v1.mp4` | 7 MB | 4K master |
+| `v2.mp4` | 17 MB | 4K master |
+
+**Anything in `public/` is deployed and publicly downloadable**, so that is
+~48 MB of dead weight on every build — more than the live site's entire media
+budget. They are left in place because they may be the only copies. Archive
+them, then move them out:
 
 ```bash
-mkdir -p media-source && mv public/video/{0_Ship_Cargo,v1,v2}.mp4 media-source/
+mkdir -p media-source
+mv public/video/{0_Ship_Cargo,v1,v2,hero-main}.mp4 media-source/
+mv public/video/hero-main-poster.jpg media-source/
 ```
 
 ### Hero rotation
