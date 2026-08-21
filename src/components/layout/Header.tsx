@@ -90,9 +90,34 @@ export function Header() {
             className="text-sand transition-opacity hover:opacity-70"
             data-cursor="link"
           >
-            {/* Colour finish in the header, per brand direction. `priority`
-                because it is the first painted brand element above the fold. */}
-            <Logo variant="color" priority className="h-11 sm:h-12 md:h-14" />
+            {/* White at the top of the page, crossfading to the colour mark
+                once the user scrolls.
+
+                Both finishes are in the DOM from the first paint and only
+                opacity animates, so the swap never waits on a network request
+                and never reflows — the two files share identical intrinsic
+                dimensions, so the link's width is stable throughout. The colour
+                copy is taken out of the layout flow; the white one sizes the
+                box. Under `prefers-reduced-motion` the global rule collapses
+                the transition and it simply snaps. */}
+            <span className="relative inline-flex h-11 sm:h-12 md:h-14">
+              <Logo
+                variant="white"
+                priority
+                className={cn(
+                  "h-full transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                  scrolled ? "opacity-0" : "opacity-100",
+                )}
+              />
+              <Logo
+                variant="color"
+                priority
+                className={cn(
+                  "absolute left-0 top-0 h-full transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                  scrolled ? "opacity-100" : "opacity-0",
+                )}
+              />
+            </span>
           </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-9 lg:flex">
