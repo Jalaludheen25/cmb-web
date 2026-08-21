@@ -92,9 +92,14 @@ export const hero = {
    * Background footage.
    *
    * The client's supplied master, served **uncompressed and unmodified** by
-   * request — a byte-identical copy of `Cmb Hero Page Background Video 01.mp4`
-   * (2560×1440, 9.6 MB). Because there is no re-encode there is deliberately
-   * no `mobileSrc`, so phones receive the same 9.6 MB file. See the README.
+   * standing request — a byte-identical copy of `Hero Page Background
+   * Colour.mp4` (2560×1440, 30 fps, 10.3 MB). Because there is no re-encode
+   * there is deliberately no `mobileSrc`, so phones receive the same file.
+   *
+   * The filename is versioned on purpose. `next.config.ts` serves `/video/*`
+   * with a 30-day `max-age`, so replacing footage at an existing URL would
+   * leave returning visitors on the old clip until their cache expired. A new
+   * name is the cache bust.
    *
    * `poster` is a still lifted from the same file, so the frame shown before
    * playback matches the opening frame exactly.
@@ -103,8 +108,8 @@ export const hero = {
    * single clip loops. Adding more here restores the sequence with crossfades,
    * no component changes needed.
    */
-  poster: "/video/hero-main-poster.jpg",
-  clips: [{ src: "/video/hero-main.mp4" }],
+  poster: "/video/hero-colour-poster.jpg",
+  clips: [{ src: "/video/hero-colour.mp4" }],
   /** Live ticker along the base of the hero. */
   ticker: [
     { label: "Sea", value: "FCL · LCL · Breakbulk" },
