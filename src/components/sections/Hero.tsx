@@ -146,7 +146,11 @@ export function Hero() {
 
           <div
             aria-hidden="true"
-            className="ml-8 hidden shrink-0 items-center gap-3 border-l border-sand/15 pl-8 md:flex"
+            // pr-20 keeps the scroll cue clear of the floating WhatsApp button,
+            // which is fixed 28px from the viewport edge and 56px wide — that
+            // reaches 84px in, past where the shell gutter ends, so without
+            // this the button clips the cue.
+            className="ml-8 hidden shrink-0 items-center gap-3 border-l border-sand/15 pl-8 pr-20 md:flex"
           >
             <span className="font-mono text-[0.625rem] uppercase tracking-[0.22em] text-sand-mute">
               Scroll
