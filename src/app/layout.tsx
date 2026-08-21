@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { Cursor } from "@/components/layout/Cursor";
+import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -112,6 +113,9 @@ export default function RootLayout({
           <Header />
           <main id="main">{children}</main>
           <Footer />
+          {/* Outside <main> so it is not swallowed by the `inert` applied to
+              page content while the mobile menu is open. */}
+          <WhatsAppButton />
         </SmoothScroll>
       </body>
     </html>

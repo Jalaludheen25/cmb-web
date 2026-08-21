@@ -77,9 +77,14 @@ export default function ContactPage() {
                     </li>
                     <li>
                       <span className="eyebrow block text-sand-mute">WhatsApp</span>
-                      <span className="mt-1.5 block text-sm text-sand">
+                      <a
+                        href={`https://wa.me/${site.contact.whatsappHref}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1.5 block text-sm text-sand transition-colors hover:text-brass-hi"
+                      >
                         {site.contact.whatsapp}
-                      </span>
+                      </a>
                     </li>
                   </ul>
 

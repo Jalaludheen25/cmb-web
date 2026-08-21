@@ -182,6 +182,38 @@ await mobile.waitForTimeout(1200);
 check("mobile: menu link navigates + closes", mobile.url().endsWith("/about"), mobile.url());
 await mobile.screenshot({ path: `${OUT}/08-mobile-about.png` });
 
+// ── 9. WhatsApp button, on every page ───────────────────────────────────────
+const EXPECTED_WA = "971561184859";
+const waPages = ["/", "/services", "/services/car-export", "/about", "/contact", "/nope-404"];
+const waMissing = [];
+let waHrefOk = true;
+
+for (const url of waPages) {
+  await page.goto(BASE + url, { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(400);
+  const wa = await page.evaluate(() => {
+    const el = document.querySelector("[data-whatsapp-fab]");
+    return el ? { href: el.getAttribute("href"), label: el.getAttribute("aria-label") } : null;
+  });
+  if (!wa) waMissing.push(url);
+  else if (!wa.href?.includes(EXPECTED_WA)) waHrefOk = false;
+}
+check("whatsapp: present on every page", waMissing.length === 0,
+  waMissing.length ? `missing on ${waMissing.join(", ")}` : `${waPages.length} pages incl. 404`);
+check("whatsapp: links to the real number", waHrefOk, `wa.me/${EXPECTED_WA}`);
+
+// It must go inert behind the open mobile menu, or keyboard users tab to an
+// invisible control sitting under the overlay.
+await mobile.goto(BASE, { waitUntil: "networkidle" });
+await mobile.waitForTimeout(1400);
+await mobile.getByRole("button", { name: /Open menu/i }).click();
+await mobile.waitForTimeout(1000);
+const waInert = await mobile.evaluate(() =>
+  document.querySelector("[data-whatsapp-fab]")?.hasAttribute("inert"),
+);
+check("whatsapp: inert behind open menu", waInert === true, `inert=${waInert}`);
+await mobile.screenshot({ path: `${OUT}/09-whatsapp-menu.png` });
+
 // ── Report ──────────────────────────────────────────────────────────────────
 await browser.close();
 

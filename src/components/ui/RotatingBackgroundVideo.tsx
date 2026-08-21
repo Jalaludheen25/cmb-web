@@ -216,8 +216,13 @@ export function RotatingBackgroundVideo({
           />
         ))}
 
-      {/* Exposed for the interaction tests, which assert the rotation advances. */}
-      <span className="sr-only" data-rotating-clip={activeClip} />
+      {/* Exposed for the interaction tests, which assert the rotation advances
+          and that every declared clip actually gets shown. */}
+      <span
+        className="sr-only"
+        data-rotating-clip={activeClip}
+        data-clip-count={clips.length}
+      />
 
       <div className={cn("absolute inset-0", overlayClassName)} />
       <div className="grain-layer" />

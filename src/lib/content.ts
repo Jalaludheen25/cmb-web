@@ -21,7 +21,8 @@
 
 export const site = {
   name: "CMB Cargo",
-  legalName: "CMB Cargo LLC",
+  /** Taken from the supplied logo artwork, which is the authoritative source. */
+  legalName: "CMB Express Cargo LLC",
   domain: "cmbcargo.ae",
   url: "https://cmbcargo.ae",
   tagline: "Freight, forwarded with precision.",
@@ -29,13 +30,21 @@ export const site = {
     "CMB Cargo is a UAE freight forwarding and contract logistics company moving sea, air and land cargo between the Gulf and 120 markets worldwide.",
   founded: 2009,
 
-  /** PLACEHOLDER — replace every field with the client's real details. */
   contact: {
-    phone: "+971 4 000 0000",
-    phoneHref: "+97140000000",
-    whatsapp: "+971 50 000 0000",
-    email: "hello@cmbcargo.ae",
-    salesEmail: "quotes@cmbcargo.ae",
+    // ✅ Client-supplied and live.
+    phone: "+971 56 118 4859",
+    phoneHref: "+971561184859",
+    /** Same line as the switchboard — one mobile serves both, as is normal for
+     *  a UAE forwarder. Split them if a separate WhatsApp line is ever added. */
+    whatsapp: "+971 56 118 4859",
+    /** Digits only, no "+" — the format wa.me deep links require. */
+    whatsappHref: "971561184859",
+    email: "enquiry@cmbcargo.ae",
+    /** Deliberately the same address. There is no separate quotes@ mailbox, and
+     *  publishing one that bounces loses enquiries silently. */
+    salesEmail: "enquiry@cmbcargo.ae",
+
+    // ⚠️ Still placeholder — the postal address below is invented.
     address: {
       line1: "Jebel Ali Free Zone (JAFZA)",
       line2: "Warehouse Complex, Gate 4",
@@ -80,20 +89,22 @@ export const hero = {
   secondaryCta: { label: "Our services", href: "/services" },
 
   /**
-   * Background rotation. The clips play in sequence and crossfade into one
-   * another, then loop — sunset departure, night harbour, terminal at work.
+   * Background footage.
    *
-   * Only the first clip is fetched on load; each later one is pulled during
-   * playback of the one before it, so adding a fourth costs nothing up front.
-   * `poster` is a frame from the first clip, so the still and the opening frame
-   * match and there is no visible jump when playback starts.
+   * The client's supplied master, served **uncompressed and unmodified** by
+   * request — a byte-identical copy of `Cmb Hero Page Background Video 01.mp4`
+   * (2560×1440, 9.6 MB). Because there is no re-encode there is deliberately
+   * no `mobileSrc`, so phones receive the same 9.6 MB file. See the README.
+   *
+   * `poster` is a still lifted from the same file, so the frame shown before
+   * playback matches the opening frame exactly.
+   *
+   * The player still rotates: this array simply has one entry today, and a
+   * single clip loops. Adding more here restores the sequence with crossfades,
+   * no component changes needed.
    */
-  poster: "/video/hero-1-poster.jpg",
-  clips: [
-    { src: "/video/hero-1.mp4", mobileSrc: "/video/hero-1-mobile.mp4" },
-    { src: "/video/hero-2.mp4", mobileSrc: "/video/hero-2-mobile.mp4" },
-    { src: "/video/hero-3.mp4", mobileSrc: "/video/hero-3-mobile.mp4" },
-  ],
+  poster: "/video/hero-main-poster.jpg",
+  clips: [{ src: "/video/hero-main.mp4" }],
   /** Live ticker along the base of the hero. */
   ticker: [
     { label: "Sea", value: "FCL · LCL · Breakbulk" },

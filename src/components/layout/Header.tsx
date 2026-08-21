@@ -46,6 +46,9 @@ export function Header() {
     const behind = [
       document.getElementById("main"),
       document.querySelector("footer"),
+      // The floating WhatsApp button is a sibling of both, so it needs naming
+      // explicitly — otherwise it stays tabbable while hidden behind the menu.
+      document.querySelector("[data-whatsapp-fab]"),
     ].filter((node): node is HTMLElement => node !== null);
     behind.forEach((node) => node.setAttribute("inert", ""));
 
@@ -87,7 +90,9 @@ export function Header() {
             className="text-sand transition-opacity hover:opacity-70"
             data-cursor="link"
           >
-            <Logo />
+            {/* Colour finish in the header, per brand direction. `priority`
+                because it is the first painted brand element above the fold. */}
+            <Logo variant="color" priority className="h-11 sm:h-12 md:h-14" />
           </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-9 lg:flex">

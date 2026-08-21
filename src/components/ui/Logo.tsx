@@ -1,56 +1,55 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /**
- * CMB Cargo identity.
+ * CMB Express Cargo LLC identity.
  *
- * The mark is a container-corner bracket that resolves into a "C", with two
- * brass lanes running out of its open side — the company initial and the idea
- * of freight leaving a gate, in one shape. It is drawn on a 44-unit grid with
- * 5-unit strokes so it stays legible down to a 16px favicon.
+ * The client's supplied artwork, in three finishes. All three are transparent
+ * PNGs at 3526×1942, so the intrinsic ratio below is fixed — pass a height via
+ * `className` (`h-11`, `h-14`…) and the width follows.
  *
- * PLACEHOLDER: this is an original mark built for the build. If the client has
- * existing brand artwork, swap the SVG here — every usage flows through this
- * component.
+ *   color  navy "CMB" with the gold bow, gold "EXPRESS CARGO LLC".
+ *          Reads well on the ink ground: the gold carries, and the navy has
+ *          just enough separation from #08090b to hold its shape. The small
+ *          "AIR · SEA · LAND" tagline goes dim at header scale — it is a
+ *          decorative third tier, not information the header needs to carry.
+ *   white  single-colour knockout, for anywhere the colour version would be
+ *          fighting a busy or mid-tone background.
+ *   black  for light grounds and print.
  */
+
+const SOURCES = {
+  color: "/images/logo/cmb-logo-color.png",
+  white: "/images/logo/cmb-logo-white.png",
+  black: "/images/logo/cmb-logo-black.png",
+} as const;
+
+/** Intrinsic aspect of the supplied artwork: 3526 × 1942. */
+const RATIO = 3526 / 1942;
+const INTRINSIC_HEIGHT = 120;
+
 export function Logo({
+  variant = "color",
   className,
-  variant = "full",
-  markClassName,
+  alt = "",
+  priority = false,
 }: {
+  variant?: keyof typeof SOURCES;
   className?: string;
-  variant?: "full" | "mark";
-  markClassName?: string;
+  /** Leave empty when the logo sits inside an already-labelled link. */
+  alt?: string;
+  priority?: boolean;
 }) {
   return (
-    <span className={cn("inline-flex items-center gap-3", className)}>
-      <svg
-        viewBox="0 0 44 44"
-        fill="none"
-        aria-hidden="true"
-        className={cn("h-8 w-8 shrink-0", markClassName)}
-      >
-        {/* Container-corner bracket → the "C" */}
-        <path
-          d="M33 8H16a8 8 0 0 0-8 8v12a8 8 0 0 0 8 8h17"
-          stroke="currentColor"
-          strokeWidth="5"
-          strokeLinecap="square"
-        />
-        {/* Freight lanes leaving the gate */}
-        <path d="M20 19.5h22" stroke="var(--color-brass)" strokeWidth="5" strokeLinecap="square" />
-        <path d="M20 27.5h13" stroke="var(--color-brass)" strokeWidth="5" strokeLinecap="square" />
-      </svg>
-
-      {variant === "full" && (
-        <span className="flex flex-col leading-none">
-          <span className="font-display text-[1.0625rem] font-bold tracking-[0.02em] optic-wide">
-            CMB
-          </span>
-          <span className="mt-[0.2em] font-mono text-[0.5rem] uppercase tracking-[0.34em] text-sand-dim">
-            Cargo
-          </span>
-        </span>
-      )}
-    </span>
+    <Image
+      src={SOURCES[variant]}
+      alt={alt}
+      width={Math.round(INTRINSIC_HEIGHT * RATIO)}
+      height={INTRINSIC_HEIGHT}
+      priority={priority}
+      aria-hidden={alt === "" ? true : undefined}
+      className={cn("w-auto object-contain", className)}
+      sizes="(max-width: 640px) 140px, 220px"
+    />
   );
 }

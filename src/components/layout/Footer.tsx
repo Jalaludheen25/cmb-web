@@ -37,7 +37,9 @@ export function Footer() {
         {/* ── Link columns ──────────────────────────────────────────────── */}
         <div className="grid gap-12 py-14 sm:grid-cols-2 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <Logo className="text-sand" />
+            {/* Standalone here rather than inside a link, so it carries the
+                company name as its accessible text. */}
+            <Logo variant="color" alt={site.legalName} className="h-14" />
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-sand-dim">
               {site.description}
             </p>

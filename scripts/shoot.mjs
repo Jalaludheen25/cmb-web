@@ -71,9 +71,15 @@ async function shoot() {
       problems.push(`[pageerror:${viewport.name}] ${err.message}`);
     });
     page.on("requestfailed", (req) => {
-      problems.push(
-        `[requestfailed:${viewport.name}] ${req.url()} — ${req.failure()?.errorText}`,
-      );
+      const error = req.failure()?.errorText ?? "";
+      // A large video still streaming when this harness navigates to the next
+      // page reports ERR_ABORTED. That is the harness, not the site — the
+      // hero master is ~9 MB and will not finish inside a screenshot pass.
+      // Narrowly scoped: any other failure, and any abort on a non-media file,
+      // still gets reported.
+      const abortedMedia = error.includes("ERR_ABORTED") && /\.(mp4|webm)$/.test(req.url());
+      if (abortedMedia) return;
+      problems.push(`[requestfailed:${viewport.name}] ${req.url()} — ${error}`);
     });
     page.on("response", (res) => {
       if (res.status() >= 400 && !res.url().includes("this-page-does-not-exist")) {

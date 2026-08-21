@@ -46,7 +46,9 @@ confirmed by the client.
 
 | What | Where | Status |
 | --- | --- | --- |
-| Phone, email, address, P.O. box | `src/lib/content.ts` → `site.contact` | Invented placeholders |
+| Phone `+971 56 118 4859` | `src/lib/content.ts` → `site.contact.phone` | ✅ Real. Also used for WhatsApp |
+| Email `enquiry@cmbcargo.ae` | `src/lib/content.ts` → `site.contact.email` | ✅ Real. `salesEmail` deliberately points at the same mailbox — see below |
+| Postal address, P.O. box | `src/lib/content.ts` → `site.contact.address` | Still invented |
 | The four headline statistics | `src/lib/content.ts` → `stats` | Invented — the section carries a visible "pending verification" note until replaced |
 | Accreditations (FIATA, IATA, ISO 9001, AEO…) | `src/lib/content.ts` → `certifications` | **Claiming a credential you do not hold is a legal problem.** List only what is actually held |
 | Client testimonials | `src/lib/content.ts` → `testimonials` | Placeholder text, placeholder names. Publish only with written consent |
@@ -54,7 +56,8 @@ confirmed by the client.
 | Insight articles | `src/lib/content.ts` → `insights` | Placeholder; links currently resolve to `/contact` |
 | Founding year (2009) | `src/lib/content.ts` → `site.founded` | Invented |
 | Contact form delivery | `ENQUIRY_WEBHOOK_URL` | **Not configured** — see below |
-| Logo | `src/components/ui/Logo.tsx` | Original mark drawn for this build; swap if the client has existing artwork |
+| Logo | `public/images/logo/` | ✅ Client artwork, three finishes (`color`, `white`, `black`) |
+| Favicon | `src/app/favicon.ico` | Still the Next.js default — generate one from the logo |
 
 Placeholder sections render a visible disclaimer line in the UI so nothing
 invented can quietly ship as fact. Delete those lines as you replace the data.
@@ -70,6 +73,35 @@ shows a success message and drops the enquiry on the floor — invisible, and
 expensive. This one fails loudly. Copy `.env.example` to `.env.local` and point
 it at a CRM intake, a Zapier/Make webhook, a Slack incoming webhook, or your own
 mail function.
+
+Note `salesEmail` intentionally resolves to the same `enquiry@cmbcargo.ae`
+mailbox. There is no separate `quotes@` address, and publishing one that bounces
+loses enquiries silently — worse than having a single address.
+
+### WhatsApp
+
+A floating button sits on every page (`src/components/layout/WhatsAppButton.tsx`,
+mounted in the root layout), deep-linking to `wa.me/971561184859` with a short
+pre-filled message. The number and prefill both come from `content.ts`.
+
+It is in WhatsApp's own green rather than the site palette on purpose: it is a
+functional affordance people scan for, and a brass one would disappear into the
+design. It sits at `z-30` — above page content, below the mobile menu (`z-40`)
+and the video lightbox (`z-80`) — and is explicitly marked `inert` while the
+mobile menu is open, so keyboard users cannot tab to a button hidden underneath
+the overlay.
+
+### Logo
+
+Client artwork in `public/images/logo/`, three finishes exposed through
+`src/components/ui/Logo.tsx` as `variant="color" | "white" | "black"`. The
+header uses **color**, per brand direction.
+
+Worth knowing: the mark's navy sits close to the `#08090b` ground, so the colour
+version needs size to read — it is `h-14` on desktop rather than the more usual
+`h-8`. The third-tier "AIR · SEA · LAND" tagline is effectively invisible at
+header scale; that is accepted, as it is decorative. Use `variant="white"` on
+any busy or mid-tone background where the colour version would struggle.
 
 ---
 
@@ -151,7 +183,8 @@ src/
     api/enquiry/route.ts    Form intake — fails loudly if unconfigured
     sitemap.ts  robots.ts  not-found.tsx
   components/
-    layout/                 Header, Footer, SmoothScroll, Cursor
+    layout/                 Header, Footer, SmoothScroll, Cursor,
+                            WhatsAppButton
     sections/               One file per page section
     three/Globe.tsx         The 3D network globe
     ui/                     Reveal, RevealText, ScrollWords, Parallax,
@@ -221,45 +254,59 @@ momentum scrolling, which feels better than any polyfill.
 attribution required. Replace with the client's own photography when available;
 real facilities always outperform stock.
 
-**Video is client-supplied.** The hero rotation and the mobile showreel come
-from footage the client provided (`0_Ship_Cargo.mp4`, `v1.mp4`, `v2.mp4`); the
-desktop showreel is still Pexels stock.
+**Video is client-supplied.** The mobile showreel is transcoded client footage;
+the desktop showreel is still Pexels stock.
 
-Every clip is transcoded to two encodes (1920 and 1080 wide, H.264, no audio,
-`faststart`) and the originals are never served.
+### ⚠️ The hero video is served uncompressed, by request
+
+`public/video/hero-main.mp4` is a **byte-identical copy** of the supplied
+`Cmb Hero Page Background Video 01.mp4` (2560×1440, 30 fps, 7.5 s, **9.1 MB**),
+verified by SHA-256. It is not re-encoded, and there is deliberately no mobile
+variant — **phones download the full 9.1 MB**.
+
+That is roughly 7× the previous hero and it is the single largest thing on the
+site. Three mitigations are already in place: the poster paints immediately so
+nothing waits on it, playback only starts once the hero is on screen, and
+`Save-Data` / 2G visitors never fetch it at all. If the weight becomes a
+problem, a visually indistinguishable encode is one command:
+
+```bash
+ffmpeg -i public/video/hero-main.mp4 -vf "scale=1920:-2" -c:v libx264 \
+  -crf 24 -preset slow -movflags +faststart -an public/video/hero-main-web.mp4
+```
+
+The file also carries an **AAC audio track**. It is left in place (removing it
+would mean rewriting the file) and is harmless — the player is `muted` — but it
+is bytes nobody hears. `-c copy -an` strips it losslessly if you want them back.
 
 ### ⚠️ Raw masters are still in `public/`
 
-`0_Ship_Cargo.mp4` (15 MB), `v1.mp4` (7 MB) and `v2.mp4` (17 MB) are the
-untouched 4K masters. Nothing references them, but **anything in `public/` is
-deployed and publicly downloadable**, so that is 39 MB of dead weight shipped on
-every build. They were left in place because they may be the only copies — move
-them somewhere outside `public/` (or delete them once you have them archived):
+`0_Ship_Cargo.mp4` (15 MB), `v1.mp4` (7 MB) and `v2.mp4` (17 MB) are untouched
+4K masters from an earlier round. Nothing references them any more, but
+**anything in `public/` is deployed and publicly downloadable**, so that is
+39 MB of dead weight on every build. They were left in place because they may be
+the only copies — move them out (or delete once archived):
 
 ```bash
 mkdir -p media-source && mv public/video/{0_Ship_Cargo,v1,v2}.mp4 media-source/
 ```
 
-To regenerate the web encodes after replacing footage, see the ffmpeg recipe in
-the git history or re-run the same `scale`/`crf 27` (desktop) and `crf 31`
-(mobile) settings. Note `0_Ship_Cargo.mp4` carries **two video streams**, so it
-needs an explicit `-map 0:v:0`.
-
 ### Hero rotation
 
-`RotatingBackgroundVideo` plays the three hero clips in sequence, crossfading
-between them, then loops. It uses two stacked `<video>` elements: one plays
-while the other sits paused on the *next* clip, already buffered. Swapping `src`
-on a single element instead would tear down the decoder and show a black frame
-every five seconds.
+`hero.clips` in `src/lib/content.ts` currently holds **one** clip, which simply
+loops. The player still supports a rotation: add entries to that array and
+`RotatingBackgroundVideo` plays them in sequence with crossfades. Nothing else
+needs to change.
 
-Only the playing clip and the one queued behind it are ever fetched, so the
-initial load is ~2 MB regardless of how many clips are in the rotation. Verify
-with `npm run rotation`, which asserts the cycle advances through every clip,
-that no sample frame is blank, and that loading stays lazy.
+It uses two stacked `<video>` elements: one plays while the other sits paused on
+the *next* clip, already buffered. Swapping `src` on a single element instead
+would tear down the decoder and show a black frame at every handoff. Only the
+playing clip and the one queued behind it are ever fetched, so initial load does
+not grow with the number of clips.
 
-To change the rotation, edit `hero.clips` in `src/lib/content.ts` — add, remove
-or reorder freely; nothing else needs to change.
+`npm run rotation` verifies playback starts, that every declared clip is shown
+(or that a lone clip loops), that there is no gap at the handoff, and that
+loading stays lazy.
 
 ### Loading discipline
 

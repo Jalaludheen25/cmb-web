@@ -279,6 +279,24 @@
   }
 }
 
+/* Gentle outward ring for the WhatsApp button. Deliberately much smaller and
+   fainter than `pulse-ring` — a big filled halo on a floating contact button
+   reads as an advert rather than an affordance. */
+@keyframes whatsapp-halo {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  70% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
 @keyframes scroll-hint {
   0% {
     transform: translateY(-60%);
