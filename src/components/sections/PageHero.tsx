@@ -38,18 +38,39 @@ export function PageHero({
         className="-z-20 object-cover"
       />
       {/* Scrim budget.
-          These two layers multiply: a flat tint plus a vertical gradient. At
-          bg-ink/80 with a via-ink/40 gradient the combined coverage was 86% at
-          the top and 88% through the middle — enough to erase any photograph
-          without strong speculars, which is why low-contrast subjects rendered
-          as a black rectangle. The values below land around 64% through the
-          text band and still reach 100% at the base for the section handover.
-          Measured worst case (pure white under the text) is 5.8:1, so headline
-          contrast stays above AA even on the brightest frame. */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-ink/45" />
+          Three layers, each with one job, rather than one full-height ramp that
+          was 100% opaque at the base and still 35% at the middle — that put a
+          hard black band across the bottom of every interior hero and dulled
+          the artwork throughout.
+
+          How light this can go is set by the *brightest* hero image, not the
+          darkest. `about-wide.jpg` averages Y≈183 raw; a scrim loose enough to
+          make the dark `dubai-night.jpg` sparkle would drop the About standfirst
+          below AA. So these values are tuned to land the brightest page around
+          6:1 at the p90 background, which is where the home hero sits.
+          Re-measure with `npm run heroscrim` after touching any of them. */}
+
+      {/* Overall tint. Held near its original strength on purpose: the
+          breadcrumb and eyebrow sit in the *middle* of the plate, where neither
+          gradient reaches, so this is the only thing carrying them. Dropping it
+          to lighten the picture washed both of them out. */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-ink/44" />
+
+      {/* Ceiling — the header sits here and needs a reliable ground. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/35 to-ink/55"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-96 bg-gradient-to-b from-ink/62 to-transparent"
+      />
+
+      {/* Floor. This is the layer the brief was about. It replaces a
+          full-height ramp that was 100% opaque at the base and still 35% at the
+          midpoint — a hard black band across the bottom of every interior hero.
+          Now the darkening is confined to the lower three-quarters and stays
+          light through it, reaching full opacity only at the very base so the
+          hero still hands off cleanly to the ink section below. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-3/4 bg-gradient-to-t from-ink via-ink/40 to-transparent"
       />
       <div className="grain-layer" />
 
@@ -61,13 +82,13 @@ export function PageHero({
                 {breadcrumb.map((crumb, i) => (
                   <li key={crumb.href} className="flex items-center gap-2">
                     {i > 0 && (
-                      <span aria-hidden="true" className="text-sand-mute">
+                      <span aria-hidden="true" className="text-sand-dim">
                         /
                       </span>
                     )}
                     <Link
                       href={crumb.href}
-                      className="font-mono text-[0.625rem] uppercase tracking-[0.18em] text-sand-dim transition-colors hover:text-brass-hi"
+                      className="font-mono text-[0.625rem] uppercase tracking-[0.18em] text-sand transition-colors hover:text-brass-hi"
                     >
                       {crumb.label}
                     </Link>
@@ -79,7 +100,7 @@ export function PageHero({
         )}
 
         <Reveal duration={0.7} delay={0.05}>
-          <p className="eyebrow mt-6 flex items-center gap-3 text-brass">
+          <p className="eyebrow mt-6 flex items-center gap-3 text-sand">
             <span aria-hidden="true" className="inline-block h-px w-8 bg-brass" />
             {eyebrow}
           </p>
@@ -103,7 +124,7 @@ export function PageHero({
             <dl className="mt-12 flex flex-wrap gap-x-12 gap-y-6 border-t border-sand/15 pt-8">
               {meta.map((item) => (
                 <div key={item.label}>
-                  <dt className="eyebrow text-sand-mute">{item.label}</dt>
+                  <dt className="eyebrow text-sand-dim">{item.label}</dt>
                   <dd className="mt-2 text-sm text-sand">{item.value}</dd>
                 </div>
               ))}

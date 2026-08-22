@@ -25,8 +25,10 @@ npm run dev          # http://localhost:3000
 | `npm run lint` | ESLint |
 | `npm run shots` | Visual QA — drives a real browser across 3 breakpoints and 8 pages, capturing screenshots and reporting console errors, failed requests and horizontal overflow. Needs the site running; see below. |
 | `npm run drive` | Interaction QA — clicks through the real UI (service hover, 3D globe, video lightbox, contact form, mobile menu) and asserts 17 behaviours. Catches the class of bug a screenshot cannot: stacking contexts, focus traps, unreachable close buttons |
+| `npm run logoswap` | Verifies the header logo crossfade — white at rest, colour once scrolled, reversible, no reflow, header actually visible |
 | `npm run rotation` | Verifies the hero video rotation — cycles through every clip, no blank frame at the handoff, loading stays lazy |
 | `npm run shot` | One-off capture: `npm run shot -- <url> <out.png> [w] [h] [selector]` |
+| `npm run heroscrim` | Audits every text element sitting over hero media — hides the copy, samples the real background, and checks contrast at the p90 for all pages × breakpoints. Catches what `contrast` cannot |
 | `npm run contrast` | Prints WCAG contrast ratios for every small-text colour pairing in the palette |
 
 ```bash
@@ -94,14 +96,55 @@ the overlay.
 ### Logo
 
 Client artwork in `public/images/logo/`, three finishes exposed through
-`src/components/ui/Logo.tsx` as `variant="color" | "white" | "black"`. The
-header uses **color**, per brand direction.
+`src/components/ui/Logo.tsx` as `variant="color" | "white" | "black"`.
 
-Worth knowing: the mark's navy sits close to the `#08090b` ground, so the colour
-version needs size to read — it is `h-14` on desktop rather than the more usual
-`h-8`. The third-tier "AIR · SEA · LAND" tagline is effectively invisible at
-header scale; that is accepted, as it is decorative. Use `variant="white"` on
-any busy or mid-tone background where the colour version would struggle.
+**The header crossfades.** White at the top of the page, colour once the reader
+scrolls past 24px, reversing on the way back up. Both finishes are in the DOM
+from the first paint and only opacity animates, so the swap never waits on a
+network request and the link box never reflows (both files share identical
+intrinsic dimensions). Verify with `npm run logoswap`.
+
+### ⚠️ `white` is derived, not supplied
+
+The client supplied a colour file only. The white knockout is generated from
+that same artwork's alpha channel (RGB filled white, alpha preserved), so the
+two lockups align exactly and the header can crossfade without any shift.
+
+Regenerate it whenever the colour art changes, or the header will crossfade
+between two different marks:
+
+```bash
+cd public/images/logo
+ffmpeg -y -i cmb-logo-color.png -f lavfi -i "color=white:s=<W>x<H>" \
+  -filter_complex "[0:v]alphaextract[a];[1:v][a]alphamerge" \
+  -frames:v 1 -update 1 cmb-logo-white.png
+```
+
+`cmb-logo-black.png` is **still the previous lockup** — a different shape, 1.816
+wide against the current pair's 2.013. Nothing uses it, which is why it was left
+alone; ask the client for a black version of the current artwork before putting
+it anywhere. `Logo.tsx` stores dimensions per variant for exactly this reason: a
+single shared ratio constant would silently distort whichever file did not match.
+
+### Swapping the artwork
+
+Next caches optimised images by source URL. Replacing a file in place leaves the
+**old** image being served locally until you clear that cache — the swap looks
+like it silently did nothing:
+
+```bash
+rm -rf .next/cache/images
+```
+
+A production deploy starts with a cold cache, so this is a local-development
+trap rather than a shipping one. The giveaway is the rendered width not changing
+when the new artwork has a different aspect ratio.
+
+> **Testing the header is position-sensitive.** It hides itself on downward
+> scroll past 420px, and a hidden header still reports `opacity: 1` on its logo
+> — so "scroll to 600, read the DOM" passes while the user sees nothing at all.
+> Check the colour state at ~200px, and assert the header is actually on screen.
+> `logoswap.mjs` does both.
 
 ---
 

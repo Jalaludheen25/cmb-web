@@ -58,13 +58,19 @@ export function Hero() {
           gets the light treatment. Both now clear AA with headroom. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-3/4 bg-gradient-to-t from-ink/90 via-ink/50 to-transparent md:h-1/2 md:from-ink/88 md:via-ink/18"
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-3/4 bg-gradient-to-t from-ink/90 via-ink/58 to-transparent md:h-1/2 md:from-ink/88 md:via-ink/18"
       />
-      {/* Ceiling gradient — the header sits over whatever the footage is doing
-          up there, and bright sky was washing the navigation out. */}
+      {/* Ceiling gradient — carries the header, and the locator strip beneath it.
+
+          Sized as a percentage, not a fixed height, because the content is
+          bottom-aligned: the locator strip lands at 22% of the hero on desktop
+          and 26% on mobile, but 45% on a tall tablet viewport. A 384px ramp
+          covered the first two and left the tablet strip in a dead zone between
+          this and the floor, measuring 2.5:1. At 70% the two layers overlap and
+          there is no gap at any viewport height. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-ink/85 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[70%] bg-gradient-to-b from-ink/85 to-transparent"
       />
 
       <motion.div
@@ -88,10 +94,10 @@ export function Hero() {
           </span>
           <p className="eyebrow text-sand">{hero.eyebrow}</p>
           <span aria-hidden="true" className="h-px w-8 bg-ink-line" />
-          {/* sand-soft rather than sand-dim: this strip sits high in the frame
-              where the floor scrim has not yet taken hold, and the footage is
-              often bright sky behind it. */}
-          <p className="eyebrow text-sand-soft">
+          {/* Full-strength sand, matching the eyebrow beside it. This strip sits
+              where neither scrim is at full strength and the footage behind it
+              is often bright sky, so the dimmer greys measured below AA here. */}
+          <p className="eyebrow text-sand">
             {site.contact.coordinates.lat.toFixed(4)}° N ·{" "}
             {site.contact.coordinates.lng.toFixed(4)}° E
           </p>

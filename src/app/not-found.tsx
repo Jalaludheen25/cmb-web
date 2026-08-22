@@ -11,9 +11,17 @@ export default function NotFound() {
         alt=""
         fill
         sizes="100vw"
-        className="-z-20 object-cover opacity-40"
+        // Was opacity-40 under bg-ink/85, which let just 6% of the picture
+        // through — the plate read as flat black. These two multiply, so both
+        // had to come down together.
+        className="-z-20 object-cover opacity-60"
       />
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-ink/85" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-ink/72" />
+      {/* Floor, so the copy at the base of the plate keeps its ground. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent"
+      />
       <div className="grain-layer" />
 
       <div className="shell relative z-10 py-32">
@@ -41,7 +49,7 @@ export default function NotFound() {
         </div>
 
         <nav aria-label="Services" className="mt-16 border-t border-ink-line pt-8">
-          <p className="eyebrow text-sand-mute">Or jump to a service</p>
+          <p className="eyebrow text-sand-dim">Or jump to a service</p>
           <ul className="mt-5 flex flex-wrap gap-x-8 gap-y-3">
             {services.map((service) => (
               <li key={service.slug}>

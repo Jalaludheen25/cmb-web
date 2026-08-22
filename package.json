@@ -12,7 +12,9 @@
     "typecheck": "tsc --noEmit",
     "drive": "node scripts/drive.mjs",
     "shot": "node scripts/shot.mjs",
-    "rotation": "node scripts/rotation.mjs"
+    "rotation": "node scripts/rotation.mjs",
+    "logoswap": "node scripts/logoswap.mjs",
+    "heroscrim": "node scripts/heroscrim.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
