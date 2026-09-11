@@ -7,7 +7,7 @@ import { footprint, site } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Request a rate from CMB Cargo. Send us the commodity, route and deadline and the operations desk in Jebel Ali will come back with a costed option.",
+    "Request a rate from CMB Cargo. Send us the commodity, route and deadline and the operations desk in Dubai will come back with a costed option.",
   alternates: { canonical: "/contact" },
 };
 
@@ -49,9 +49,12 @@ export default function ContactPage() {
                 <div className="rounded-sm border border-ink-line bg-ink-soft p-8">
                   <p className="eyebrow text-sand-mute">Direct</p>
 
+                  {/* nowrap + a step down below `sm`: at text-3xl in the wide
+                      display cut, a 16-character number overran the card on a
+                      phone and broke mid-digits, which invites misdialling. */}
                   <a
                     href={`tel:${site.contact.phoneHref}`}
-                    className="mt-6 block font-display text-3xl optic-wide text-sand transition-colors hover:text-brass-hi"
+                    className="mt-6 block whitespace-nowrap font-display text-2xl optic-wide text-sand transition-colors hover:text-brass-hi sm:text-3xl"
                   >
                     {site.contact.phone}
                   </a>
@@ -96,7 +99,7 @@ export default function ContactPage() {
                       <p>
                         {site.contact.address.city}, {site.contact.address.country}
                       </p>
-                      <p>{site.contact.address.poBox}</p>
+                      <p>Makani {site.contact.address.makani}</p>
                     </address>
                   </div>
 
@@ -120,8 +123,12 @@ export default function ContactPage() {
                 </div>
               </Reveal>
 
+              {/* Phone, email and head-office address are now real. Saying
+                  "placeholder contact details" over them would undercut the
+                  genuine ones, so this names only what is still unverified. */}
               <p className="mt-6 font-mono text-[0.625rem] uppercase leading-relaxed tracking-[0.16em] text-sand-mute">
-                Placeholder contact details — replace before launch.
+                Opening hours and the Abu Dhabi and Sharjah offices are placeholders — confirm
+                before launch.
               </p>
             </div>
           </aside>

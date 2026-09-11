@@ -94,13 +94,15 @@ export function Hero() {
           </span>
           <p className="eyebrow text-sand">{hero.eyebrow}</p>
           <span aria-hidden="true" className="h-px w-8 bg-ink-line" />
-          {/* Full-strength sand, matching the eyebrow beside it. This strip sits
-              where neither scrim is at full strength and the footage behind it
-              is often bright sky, so the dimmer greys measured below AA here. */}
-          <p className="eyebrow text-sand">
-            {site.contact.coordinates.lat.toFixed(4)}° N ·{" "}
-            {site.contact.coordinates.lng.toFixed(4)}° E
-          </p>
+          {/* The head office's Makani number, straight from the tenancy record.
+              This used to be lat/lng — but those were invented Jebel Ali values,
+              and the official Makani service is unreachable from outside the UAE
+              to resolve the real ones. A code copied from the lease beats four
+              decimal places of false precision, and it is the address UAE
+              visitors can actually type into the Makani app.
+              Full-strength sand to match the eyebrow: this strip sits where
+              neither scrim is at full strength, and dimmer greys fell below AA. */}
+          <p className="eyebrow text-sand">Makani {site.contact.address.makani}</p>
         </motion.div>
 
         {/* ── Headline ────────────────────────────────────────────────── */}

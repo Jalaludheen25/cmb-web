@@ -29,7 +29,7 @@ export default function AboutPage() {
         ]}
         meta={[
           { label: "Founded", value: String(site.founded) },
-          { label: "Head office", value: "Jebel Ali, Dubai" },
+          { label: "Head office", value: "Al Barsha, Dubai" },
           { label: "Offices", value: `${footprint.length} in the UAE` },
         ]}
       />

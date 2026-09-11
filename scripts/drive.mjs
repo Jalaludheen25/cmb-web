@@ -183,7 +183,7 @@ check("mobile: menu link navigates + closes", mobile.url().endsWith("/about"), m
 await mobile.screenshot({ path: `${OUT}/08-mobile-about.png` });
 
 // ── 9. WhatsApp button, on every page ───────────────────────────────────────
-const EXPECTED_WA = "971561184859";
+const EXPECTED_WA = "971507722453";
 const waPages = ["/", "/services", "/services/car-export", "/about", "/contact", "/nope-404"];
 const waMissing = [];
 let waHrefOk = true;

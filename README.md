@@ -48,9 +48,9 @@ confirmed by the client.
 
 | What | Where | Status |
 | --- | --- | --- |
-| Phone `+971 56 118 4859` | `src/lib/content.ts` → `site.contact.phone` | ✅ Real. Also used for WhatsApp |
+| Phone `+971 50 772 2453` | `src/lib/content.ts` → `site.contact.phone` | ✅ Real (supplied as 050 772 2453). Also used for WhatsApp |
 | Email `enquiry@cmbcargo.ae` | `src/lib/content.ts` → `site.contact.email` | ✅ Real. `salesEmail` deliberately points at the same mailbox — see below |
-| Postal address, P.O. box | `src/lib/content.ts` → `site.contact.address` | Still invented |
+| Head-office address | `src/lib/content.ts` → `site.contact.address` | ✅ Real — Office 301-210, Al Barsha-373-1313, Plot 472-0, Al Barsha First, Dubai · Makani 18750 78783, from the tenancy record. No P.O. box on record, so none is published |
 | The four headline statistics | `src/lib/content.ts` → `stats` | Invented — the section carries a visible "pending verification" note until replaced |
 | Accreditations (FIATA, IATA, ISO 9001, AEO…) | `src/lib/content.ts` → `certifications` | **Claiming a credential you do not hold is a legal problem.** List only what is actually held |
 | Client testimonials | `src/lib/content.ts` → `testimonials` | Placeholder text, placeholder names. Publish only with written consent |
@@ -83,7 +83,7 @@ loses enquiries silently — worse than having a single address.
 ### WhatsApp
 
 A floating button sits on every page (`src/components/layout/WhatsAppButton.tsx`,
-mounted in the root layout), deep-linking to `wa.me/971561184859` with a short
+mounted in the root layout), deep-linking to `wa.me/971507722453` with a short
 pre-filled message. The number and prefill both come from `content.ts`.
 
 It is in WhatsApp's own green rather than the site palette on purpose: it is a

@@ -99,7 +99,7 @@ export function Footer() {
               <p>
                 {site.contact.address.city}, {site.contact.address.country}
               </p>
-              <p>{site.contact.address.poBox}</p>
+              <p>Makani {site.contact.address.makani}</p>
             </address>
             <div className="mt-5 space-y-1 text-sm">
               <a

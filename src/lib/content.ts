@@ -31,29 +31,37 @@ export const site = {
   founded: 2009,
 
   contact: {
-    // ✅ Client-supplied and live.
-    phone: "+971 56 118 4859",
-    phoneHref: "+971561184859",
+    // ✅ Client-supplied and live. Supplied as 050 772 2453; shown in
+    // international form because most of the audience is dialling from abroad.
+    phone: "+971 50 772 2453",
+    phoneHref: "+971507722453",
     /** Same line as the switchboard — one mobile serves both, as is normal for
      *  a UAE forwarder. Split them if a separate WhatsApp line is ever added. */
-    whatsapp: "+971 56 118 4859",
+    whatsapp: "+971 50 772 2453",
     /** Digits only, no "+" — the format wa.me deep links require. */
-    whatsappHref: "971561184859",
+    whatsappHref: "971507722453",
     email: "enquiry@cmbcargo.ae",
     /** Deliberately the same address. There is no separate quotes@ mailbox, and
      *  publishing one that bounces loses enquiries silently. */
     salesEmail: "enquiry@cmbcargo.ae",
 
-    // ⚠️ Still placeholder — the postal address below is invented.
+    // ✅ Taken from the client's tenancy (leased unit) record:
+    //    Property No. 301-210 · Office · Building AL BARSHA-373-1313
+    //    Plot 472-0 · Al Barsha First · Makani 18750 78783
+    // "Al Barsha-373-1313" is the Land Department's registered building name,
+    // not a typo — if the building has a common name, add it to line1.
+    // There is no P.O. box on the record, so none is published.
     address: {
-      line1: "Jebel Ali Free Zone (JAFZA)",
-      line2: "Warehouse Complex, Gate 4",
+      line1: "Office 301-210, Al Barsha-373-1313",
+      line2: "Plot 472-0, Al Barsha First",
       city: "Dubai",
       country: "United Arab Emirates",
-      poBox: "P.O. Box 00000",
+      /** Dubai Municipality's official geographic address. Couriers, taxis and
+       *  visitors can enter it in the Makani app to reach the entrance. */
+      makani: "18750 78783",
     },
+    // ⚠️ Still unverified — opening hours were never supplied.
     hours: "Operations desk staffed 24 / 7 · Office Mon–Sat, 08:00–18:00 GST",
-    coordinates: { lat: 25.0106, lng: 55.0611 },
   },
 
   social: [
@@ -128,7 +136,7 @@ export const manifesto = {
   /** Word-by-word scroll reveal. Keep it one sentence. */
   body:
     "We are a freight forwarder built around a simple, unglamorous promise: that the person who quoted your shipment is the person who still owns it at 3am when a vessel rolls, a border closes, or a consignee changes their mind.",
-  signature: "— The operations desk, Jebel Ali",
+  signature: "— The operations desk, Al Barsha",
 } as const;
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -555,7 +563,9 @@ export const certifications = [
    ───────────────────────────────────────────────────────────────────────── */
 
 export const footprint = [
-  { city: "Dubai", role: "Head office & warehousing", detail: "Jebel Ali Free Zone" },
+  // ✅ Real — matches site.contact.address. The other two rows are still
+  // invented, as is "warehousing": the Dubai lease is a 10 m² office.
+  { city: "Dubai", role: "Head office", detail: "Al Barsha First" },
   { city: "Abu Dhabi", role: "Projects & energy desk", detail: "Mussafah" },
   { city: "Sharjah", role: "Air & consolidation", detail: "Sharjah Airport Free Zone" },
 ] as const;
