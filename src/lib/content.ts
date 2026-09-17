@@ -40,25 +40,18 @@ export const site = {
     whatsapp: "+971 50 772 2453",
     /** Digits only, no "+" — the format wa.me deep links require. */
     whatsappHref: "971507722453",
-    email: "enquiry@cmbcargo.ae",
-    /** Deliberately the same address. There is no separate quotes@ mailbox, and
-     *  publishing one that bounces loses enquiries silently. */
+    /** General enquiries. */
+    email: "info@cmbcargo.ae",
+    /** Rates and quotes — also where the enquiry form delivers. */
     salesEmail: "enquiry@cmbcargo.ae",
 
-    // ✅ Taken from the client's tenancy (leased unit) record:
-    //    Property No. 301-210 · Office · Building AL BARSHA-373-1313
-    //    Plot 472-0 · Al Barsha First · Makani 18750 78783
-    // "Al Barsha-373-1313" is the Land Department's registered building name,
-    // not a typo — if the building has a common name, add it to line1.
-    // There is no P.O. box on the record, so none is published.
+    // ✅ Client-confirmed. Deliberately just the unit and area: the building
+    // number, plot number and Makani code were dropped at the client's request.
     address: {
-      line1: "Office 301-210, Al Barsha-373-1313",
-      line2: "Plot 472-0, Al Barsha First",
+      line1: "Office 301-210",
+      line2: "Al Barsha First",
       city: "Dubai",
-      country: "United Arab Emirates",
-      /** Dubai Municipality's official geographic address. Couriers, taxis and
-       *  visitors can enter it in the Makani app to reach the entrance. */
-      makani: "18750 78783",
+      country: "UAE",
     },
     // ⚠️ Still unverified — opening hours were never supplied.
     hours: "Operations desk staffed 24 / 7 · Office Mon–Sat, 08:00–18:00 GST",
@@ -285,8 +278,9 @@ export const services: Service[] = [
       "Inland collection to port",
     ],
     detail: {
+      // Client-supplied copy, used verbatim — do not paraphrase or re-edit.
       intro:
-        "Almost every vehicle export that goes wrong goes wrong on paper, not on the quay. A car held because the chassis number on the certificate does not match the one stamped on the vehicle will cost more in storage than the freight ever did.",
+        "In vehicle export operations, most complications arise from documentation rather than from port handling. When a chassis number on the certificate does not match the number stamped on the vehicle, the resulting hold can incur storage charges that exceed the freight cost itself",
       points: [
         {
           title: "RoRo or container",
@@ -498,7 +492,13 @@ export const corridors = [
   { name: "Rotterdam", country: "Netherlands", lat: 51.9225, lng: 4.4792, mode: "Sea" },
   { name: "Shanghai", country: "China", lat: 31.2304, lng: 121.4737, mode: "Sea" },
   { name: "Singapore", country: "Singapore", lat: 1.3521, lng: 103.8198, mode: "Sea" },
+  // ── Indian subcontinent. Client-requested: Sri Lanka, Nhava Sheva and the
+  //    other Indian seaports worked out of Jebel Ali. ──────────────────────
+  { name: "Colombo", country: "Sri Lanka", lat: 6.9271, lng: 79.8612, mode: "Sea" },
   { name: "Nhava Sheva", country: "India", lat: 18.9496, lng: 72.9492, mode: "Sea" },
+  { name: "Mundra", country: "India", lat: 22.8394, lng: 69.7219, mode: "Sea" },
+  { name: "Chennai", country: "India", lat: 13.0827, lng: 80.2707, mode: "Sea" },
+  { name: "Cochin", country: "India", lat: 9.9312, lng: 76.2673, mode: "Sea" },
   { name: "Jeddah", country: "Saudi Arabia", lat: 21.4858, lng: 39.1925, mode: "Road / Sea" },
   { name: "Hamburg", country: "Germany", lat: 53.5511, lng: 9.9937, mode: "Sea" },
   { name: "New York", country: "United States", lat: 40.7128, lng: -74.006, mode: "Sea / Air" },
@@ -565,9 +565,11 @@ export const certifications = [
 export const footprint = [
   // ✅ Real — matches site.contact.address. The other two rows are still
   // invented, as is "warehousing": the Dubai lease is a 10 m² office.
-  { city: "Dubai", role: "Head office", detail: "Al Barsha First" },
+  { city: "Dubai", role: "Head office", detail: "Office 301-210, Al Barsha First" },
   { city: "Abu Dhabi", role: "Projects & energy desk", detail: "Mussafah" },
   { city: "Sharjah", role: "Air & consolidation", detail: "Sharjah Airport Free Zone" },
+  // ✅ Client-confirmed. Trades under its own name in Sri Lanka.
+  { city: "Colombo", role: "Sri Lanka office", detail: "Global Deals Logistics (Pvt) Ltd" },
 ] as const;
 
 /* ─────────────────────────────────────────────────────────────────────────

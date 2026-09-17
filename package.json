@@ -14,7 +14,8 @@
     "shot": "node scripts/shot.mjs",
     "rotation": "node scripts/rotation.mjs",
     "logoswap": "node scripts/logoswap.mjs",
-    "heroscrim": "node scripts/heroscrim.mjs"
+    "heroscrim": "node scripts/heroscrim.mjs",
+    "enquiry:test": "node scripts/enquiry-e2e.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
@@ -23,6 +24,7 @@
     "lenis": "^1.3.26",
     "motion": "^13.1.0",
     "next": "16.3.1",
+    "nodemailer": "^10.0.10",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "tailwind-merge": "^3.6.0",
@@ -31,11 +33,13 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
     "playwright": "^1.62.1",
+    "smtp-server": "^3.19.13",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

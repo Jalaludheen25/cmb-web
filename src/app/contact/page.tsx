@@ -99,7 +99,6 @@ export default function ContactPage() {
                       <p>
                         {site.contact.address.city}, {site.contact.address.country}
                       </p>
-                      <p>Makani {site.contact.address.makani}</p>
                     </address>
                   </div>
 

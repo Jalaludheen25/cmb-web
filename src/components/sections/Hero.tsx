@@ -92,17 +92,10 @@ export function Hero() {
             />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-brass-hi" />
           </span>
+          {/* Location only. The Makani code that used to sit alongside this was
+              removed at the client's request, and the divider rule went with it
+              rather than being left pointing at nothing. */}
           <p className="eyebrow text-sand">{hero.eyebrow}</p>
-          <span aria-hidden="true" className="h-px w-8 bg-ink-line" />
-          {/* The head office's Makani number, straight from the tenancy record.
-              This used to be lat/lng — but those were invented Jebel Ali values,
-              and the official Makani service is unreachable from outside the UAE
-              to resolve the real ones. A code copied from the lease beats four
-              decimal places of false precision, and it is the address UAE
-              visitors can actually type into the Makani app.
-              Full-strength sand to match the eyebrow: this strip sits where
-              neither scrim is at full strength, and dimmer greys fell below AA. */}
-          <p className="eyebrow text-sand">Makani {site.contact.address.makani}</p>
         </motion.div>
 
         {/* ── Headline ────────────────────────────────────────────────── */}

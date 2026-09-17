@@ -306,9 +306,7 @@ function MenuOverlay({ onClose }: { onClose: () => void }) {
           <p className="mt-4 font-mono text-[0.625rem] uppercase leading-relaxed tracking-[0.16em] text-sand-mute">
             {site.contact.address.line1}
             <br />
-            {site.contact.address.line2}, {site.contact.address.city}
-            <br />
-            Makani {site.contact.address.makani}
+            {site.contact.address.line2}, {site.contact.address.city}, {site.contact.address.country}
           </p>
         </motion.div>
       </div>

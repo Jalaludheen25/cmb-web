@@ -28,6 +28,7 @@ npm run dev          # http://localhost:3000
 | `npm run logoswap` | Verifies the header logo crossfade — white at rest, colour once scrolled, reversible, no reflow, header actually visible |
 | `npm run rotation` | Verifies the hero video rotation — cycles through every clip, no blank frame at the handoff, loading stays lazy |
 | `npm run shot` | One-off capture: `npm run shot -- <url> <out.png> [w] [h] [selector]` |
+| `npm run enquiry:test` | End-to-end test of the contact form against a throwaway SMTP server — validation, delivery, Reply-To, subject, body, honeypot |
 | `npm run heroscrim` | Audits every text element sitting over hero media — hides the copy, samples the real background, and checks contrast at the p90 for all pages × breakpoints. Catches what `contrast` cannot |
 | `npm run contrast` | Prints WCAG contrast ratios for every small-text colour pairing in the palette |
 
@@ -49,15 +50,15 @@ confirmed by the client.
 | What | Where | Status |
 | --- | --- | --- |
 | Phone `+971 50 772 2453` | `src/lib/content.ts` → `site.contact.phone` | ✅ Real (supplied as 050 772 2453). Also used for WhatsApp |
-| Email `enquiry@cmbcargo.ae` | `src/lib/content.ts` → `site.contact.email` | ✅ Real. `salesEmail` deliberately points at the same mailbox — see below |
-| Head-office address | `src/lib/content.ts` → `site.contact.address` | ✅ Real — Office 301-210, Al Barsha-373-1313, Plot 472-0, Al Barsha First, Dubai · Makani 18750 78783, from the tenancy record. No P.O. box on record, so none is published |
+| Emails | `src/lib/content.ts` → `site.contact` | ✅ Real — `email` is `info@cmbcargo.ae` (general), `salesEmail` is `enquiry@cmbcargo.ae` (rates, quotes, and where the form delivers) |
+| Head-office address | `src/lib/content.ts` → `site.contact.address` | ✅ Real — Office 301-210, Al Barsha First, Dubai, UAE. Building number, plot number and Makani code removed at the client's request |
 | The four headline statistics | `src/lib/content.ts` → `stats` | Invented — the section carries a visible "pending verification" note until replaced |
 | Accreditations (FIATA, IATA, ISO 9001, AEO…) | `src/lib/content.ts` → `certifications` | **Claiming a credential you do not hold is a legal problem.** List only what is actually held |
 | Client testimonials | `src/lib/content.ts` → `testimonials` | Placeholder text, placeholder names. Publish only with written consent |
-| Office list | `src/lib/content.ts` → `footprint` | Invented |
+| Office list | `src/lib/content.ts` → `footprint` | Dubai and Colombo (Global Deals Logistics (Pvt) Ltd) are ✅ real. Abu Dhabi and Sharjah are still invented |
 | Insight articles | `src/lib/content.ts` → `insights` | Placeholder; links currently resolve to `/contact` |
 | Founding year (2009) | `src/lib/content.ts` → `site.founded` | Invented |
-| Contact form delivery | `ENQUIRY_WEBHOOK_URL` | **Not configured** — see below |
+| Contact form delivery | `SMTP_*` env vars | Code is done and tested; **needs the mailbox password** to go live — see below |
 | Logo | `public/images/logo/` | ✅ Client artwork, three finishes (`color`, `white`, `black`) |
 | Favicon | `src/app/favicon.ico` | Still the Next.js default — generate one from the logo |
 
@@ -66,19 +67,39 @@ invented can quietly ship as fact. Delete those lines as you replace the data.
 
 ### Contact form
 
-`src/app/api/enquiry/route.ts` validates and forwards submissions to
-`ENQUIRY_WEBHOOK_URL`. **Until that variable is set the endpoint returns 503**
-and the form tells the visitor to phone or email instead.
+`src/app/api/enquiry/route.ts` validates the submission and emails it to
+**enquiry@cmbcargo.ae** over SMTP (nodemailer). `Reply-To` is set to the
+enquirer, so hitting Reply in the mailbox answers them directly.
 
-This is intentional. The common failure mode for a marketing site is a form that
-shows a success message and drops the enquiry on the floor — invisible, and
-expensive. This one fails loudly. Copy `.env.example` to `.env.local` and point
-it at a CRM intake, a Zapier/Make webhook, a Slack incoming webhook, or your own
-mail function.
+**To go live, set four variables** — copy `.env.example` to `.env.local`
+locally, or add them under Settings → Environment Variables on the host:
 
-Note `salesEmail` intentionally resolves to the same `enquiry@cmbcargo.ae`
-mailbox. There is no separate `quotes@` address, and publishing one that bounces
-loses enquiries silently — worse than having a single address.
+```
+SMTP_HOST=          # from the cmbcargo.ae email provider
+SMTP_PORT=465       # 465 implicit TLS, 587 STARTTLS
+SMTP_USER=enquiry@cmbcargo.ae
+SMTP_PASS=          # that mailbox's password or app password
+```
+
+`ENQUIRY_TO` and `ENQUIRY_FROM` are optional overrides; `ENQUIRY_WEBHOOK_URL`
+still works as an alternative for a CRM intake and is used only when SMTP is
+absent.
+
+`From` is deliberately the authenticated mailbox rather than the visitor's
+address. Spoofing the visitor in `From` is what gets a domain's mail marked as
+spam — the visitor's address goes in `Reply-To` instead, which is the header
+that actually matters when you answer.
+
+**Until SMTP is configured the endpoint returns 503** and the form tells the
+visitor to phone or email instead. That is the error the client reported: the
+safety net firing because no mail transport had been set up, not a fault in the
+form. A form that reports success and quietly discards the enquiry loses real
+business invisibly, so it fails loudly instead.
+
+Verify the whole path with `npm run enquiry:test`. It starts a throwaway SMTP
+server, boots the production build against it, fills in the form in a real
+browser and then asserts on the message that actually arrived — recipient,
+`Reply-To`, `From`, subject and body — plus validation and the honeypot.
 
 ### WhatsApp
 

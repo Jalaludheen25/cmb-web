@@ -124,7 +124,7 @@ export function PageHero({
             <dl className="mt-12 flex flex-wrap gap-x-12 gap-y-6 border-t border-sand/15 pt-8">
               {meta.map((item) => (
                 <div key={item.label}>
-                  <dt className="eyebrow text-sand-dim">{item.label}</dt>
+                  <dt className="eyebrow text-sand">{item.label}</dt>
                   <dd className="mt-2 text-sm text-sand">{item.value}</dd>
                 </div>
               ))}

@@ -69,7 +69,10 @@ export function Network() {
                     onBlur={() => setActive(null)}
                     aria-pressed={active === i}
                     className={cn(
-                      "group/lane flex w-full items-baseline gap-4 border-b border-ink-line/70 py-3.5 text-left transition-colors duration-400",
+                      // Tighter rows than before: the lane list grew with the
+                      // Sri Lanka and India ports, and at the old spacing 16
+                      // entries ran far past the globe beside them.
+                      "group/lane flex w-full items-baseline gap-3 border-b border-ink-line/70 py-2.5 text-left transition-colors duration-400 sm:gap-4",
                       active === i ? "text-brass-hi" : "text-sand hover:text-brass-hi",
                     )}
                   >
@@ -82,10 +85,12 @@ export function Network() {
                     >
                       {pad(i + 1)}
                     </span>
-                    <span className="flex-1 truncate text-base">{corridor.name}</span>
-                    <span className="hidden shrink-0 text-xs text-sand-mute sm:block">
-                      {corridor.country}
-                    </span>
+                    <span className="flex-1 truncate text-sm sm:text-base">{corridor.name}</span>
+                    {/* The country used to be hidden below `sm`, which left the
+                        phone list reading as a column of bare port names —
+                        exactly the "not showing accurately" complaint. It is
+                        the information that makes the lane meaningful. */}
+                    <span className="shrink-0 text-xs text-sand-mute">{corridor.country}</span>
                     <span
                       className={cn(
                         "shrink-0 font-mono text-[0.5625rem] uppercase tracking-[0.16em] transition-colors",

@@ -10,7 +10,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 const RADIUS = 1;
 const BRASS = "#c98b3f";
 const BRASS_HI = "#e9be7c";
-const LINE = "#2a2f37";
+const LINE = "#39414f";
 
 /** Geographic coordinates → a point on the sphere. */
 function toVector(lat: number, lng: number, radius = RADIUS) {
@@ -118,33 +118,61 @@ function GlobeBody({ activeIndex }: { activeIndex: number | null }) {
     [hubPoint],
   );
 
-  // Longitude the camera should be facing for the selected corridor.
+  /**
+   * The Y rotation that brings Jebel Ali round to face the camera.
+   *
+   * Note the minus. A rotation of `a` about Y sends a point whose heading is
+   * `β = atan2(x, z)` to `β + a`, so landing it on +Z (the camera) needs `-β`.
+   * Getting that sign wrong parks the hub exactly on the silhouette edge, which
+   * is precisely where it looks broken.
+   */
+  const hubFacingY = useMemo(() => -Math.atan2(hubPoint.x, hubPoint.z), [hubPoint]);
+
+  /** Y rotation that centres the midpoint of the selected lane. */
   const targetY = useMemo(() => {
     if (activeIndex === null) return null;
     const corridor = corridors[activeIndex];
-    const midLng = (hub.lng + corridor.lng) / 2;
-    return -((midLng + 180) * Math.PI) / 180 - Math.PI / 2;
-  }, [activeIndex]);
+    const mid = hubPoint.clone().add(toVector(corridor.lat, corridor.lng));
+    // Near-antipodal lanes have no meaningful midpoint direction.
+    if (mid.length() < 1e-6) return hubFacingY;
+    mid.normalize();
+    return -Math.atan2(mid.x, mid.z);
+  }, [activeIndex, hubPoint, hubFacingY]);
+
+  const elapsed = useRef(0);
 
   useFrame((_, delta) => {
     if (!group.current) return;
 
-    if (targetY !== null) {
-      // Ease toward the selected lane along the shortest path.
-      let diff = targetY - group.current.rotation.y;
+    // Ease toward a heading along the shortest way round.
+    const easeTo = (want: number, rate: number) => {
+      let diff = want - group.current!.rotation.y;
       diff = ((diff + Math.PI) % (Math.PI * 2)) - Math.PI;
-      group.current.rotation.y += diff * Math.min(1, delta * 2.4);
+      group.current!.rotation.y += diff * Math.min(1, delta * rate);
+    };
+
+    if (targetY !== null) {
+      easeTo(targetY, 2.4);
     } else if (!reduced) {
-      group.current.rotation.y += delta * 0.085;
+      // Previously this span the globe continuously. That looked alive but read
+      // badly: for much of every revolution Jebel Ali sat on the silhouette
+      // edge, so all sixteen lanes collapsed into a sliver against the limb and
+      // the network was unreadable. It now holds the hub facing the viewer and
+      // drifts ±24°, which keeps the fan of routes legible at every moment
+      // while still feeling in motion.
+      elapsed.current += delta;
+      easeTo(hubFacingY + Math.sin(elapsed.current * 0.16) * 0.42, 1.6);
     }
   });
 
   return (
-    <group ref={group} rotation={[0.32, 2.1, 0.12]}>
+    // X tilt of 0.40 rad puts Jebel Ali's 25°N latitude on the centre line, so
+    // the hub sits dead centre rather than up in the northern hemisphere.
+    <group ref={group} rotation={[0.4, hubFacingY, 0.12]}>
       {/* Solid core, slightly inset so arcs read against it */}
       <mesh>
         <sphereGeometry args={[RADIUS * 0.985, 64, 64]} />
-        <meshBasicMaterial color="#0b0d10" />
+        <meshBasicMaterial color="#111926" />
       </mesh>
 
       {/* Graticule */}
@@ -152,7 +180,7 @@ function GlobeBody({ activeIndex }: { activeIndex: number | null }) {
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[graticule, 3]} />
         </bufferGeometry>
-        <lineBasicMaterial color={LINE} transparent opacity={0.55} depthWrite={false} />
+        <lineBasicMaterial color={LINE} transparent opacity={0.8} depthWrite={false} />
       </lineSegments>
 
       {/* Surface dot field */}
@@ -161,10 +189,10 @@ function GlobeBody({ activeIndex }: { activeIndex: number | null }) {
           <bufferAttribute attach="attributes-position" args={[dots, 3]} />
         </bufferGeometry>
         <pointsMaterial
-          size={0.007}
+          size={0.009}
           color={BRASS}
           transparent
-          opacity={0.36}
+          opacity={0.55}
           sizeAttenuation
         />
       </points>
@@ -175,7 +203,7 @@ function GlobeBody({ activeIndex }: { activeIndex: number | null }) {
         <meshBasicMaterial
           color={BRASS}
           transparent
-          opacity={0.05}
+          opacity={0.14}
           side={THREE.BackSide}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
@@ -191,9 +219,9 @@ function GlobeBody({ activeIndex }: { activeIndex: number | null }) {
             <Line
               points={lane.points}
               color={isActive ? BRASS_HI : BRASS}
-              lineWidth={isActive ? 2 : 1}
+              lineWidth={isActive ? 2.8 : 1.7}
               transparent
-              opacity={dimmed ? 0.14 : isActive ? 1 : 0.5}
+              opacity={dimmed ? 0.18 : isActive ? 1 : 0.78}
             />
             <Pulse curve={lane.curve} offset={i / corridors.length} active={isActive} />
             <Marker position={lane.end} active={isActive} dimmed={dimmed} />
@@ -232,7 +260,7 @@ function Pulse({
 
   return (
     <mesh ref={ref}>
-      <sphereGeometry args={[active ? 0.016 : 0.011, 12, 12]} />
+      <sphereGeometry args={[active ? 0.019 : 0.014, 12, 12]} />
       <meshBasicMaterial color={BRASS_HI} transparent opacity={active ? 1 : 0.75} />
     </mesh>
   );
@@ -271,7 +299,7 @@ function Marker({
   return (
     <group position={position} quaternion={quaternion}>
       <mesh>
-        <sphereGeometry args={[isHub ? 0.02 : 0.013, 14, 14]} />
+        <sphereGeometry args={[isHub ? 0.027 : 0.017, 14, 14]} />
         <meshBasicMaterial
           color={isHub || active ? BRASS_HI : BRASS}
           transparent

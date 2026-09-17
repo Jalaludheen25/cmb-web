@@ -30,7 +30,7 @@ export default function AboutPage() {
         meta={[
           { label: "Founded", value: String(site.founded) },
           { label: "Head office", value: "Al Barsha, Dubai" },
-          { label: "Offices", value: `${footprint.length} in the UAE` },
+          { label: "Offices", value: `${footprint.length} across UAE & Sri Lanka` },
         ]}
       />
 
@@ -135,8 +135,8 @@ export default function AboutPage() {
             </span>
             <Reveal delay={0.1}>
               <p className="mt-8 max-w-md text-sm leading-relaxed text-sand-dim">
-                Three UAE locations, each with its own operational focus, plus a vetted agency
-                network covering the lanes we do not staff ourselves.
+                Three UAE locations and an office in Colombo, each with its own operational
+                focus, plus a vetted agency network covering the lanes we do not staff ourselves.
               </p>
             </Reveal>
           </div>
