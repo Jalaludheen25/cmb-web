@@ -71,15 +71,53 @@ invented can quietly ship as fact. Delete those lines as you replace the data.
 **enquiry@cmbcargo.ae** over SMTP (nodemailer). `Reply-To` is set to the
 enquirer, so hitting Reply in the mailbox answers them directly.
 
-**To go live, set four variables** — copy `.env.example` to `.env.local`
-locally, or add them under Settings → Environment Variables on the host:
+### Going live on Vercel (the exact steps)
 
+The site is hosted on **Vercel**; cmbcargo.ae email is on **Zoho India** (MX
+records are `mx.zoho.in`, SPF is `include:zohomail.in`).
+
+1. **Generate a Zoho app password.** Zoho Mail → My Account → Security → App
+   Passwords. Zoho rejects the ordinary mailbox password for SMTP when 2FA is
+   on, which reads as "invalid credentials" and sends people hunting for the
+   wrong problem.
+2. **Add four variables** in Vercel → Project → Settings → Environment
+   Variables, ticked for **Production** (and Preview if you test there):
+
+   ```
+   SMTP_HOST=smtp.zoho.in
+   SMTP_PORT=465
+   SMTP_USER=enquiry@cmbcargo.ae
+   SMTP_PASS=<the app password from step 1>
+   ```
+
+3. **Redeploy.** This is the step people miss: Vercel bakes environment
+   variables in at build time, so an existing deployment keeps the old (empty)
+   values and the form carries on failing no matter how correct the variables
+   look in the dashboard. Deployments → ⋯ → Redeploy.
+4. **Verify** with `curl https://www.cmbcargo.ae/api/enquiry` — see below.
+
+> ⚠️ **`smtp.zoho.in`, not `smtp.zoho.com`.** Zoho keeps each account in the
+> data centre it was created in. Authenticating against the wrong region fails
+> even when the password is right, and the error message does not say so.
+
+### Checking whether it is connected
+
+`GET /api/enquiry` reports which transport is wired up, without sending
+anything — so the deployment can be checked without dropping test enquiries in
+the live sales mailbox:
+
+```bash
+curl https://www.cmbcargo.ae/api/enquiry
+# not configured →  {"transport":"none","ready":false,"smtpVars":{...}}
+# configured     →  {"transport":"smtp","ready":true,"smtpVars":{...}}
 ```
-SMTP_HOST=          # from the cmbcargo.ae email provider
-SMTP_PORT=465       # 465 implicit TLS, 587 STARTTLS
-SMTP_USER=enquiry@cmbcargo.ae
-SMTP_PASS=          # that mailbox's password or app password
-```
+
+`smtpVars` shows which of the four are present, so a half-finished setup points
+straight at the missing one. It returns booleans only, never any value, and is
+sent `no-store` so a cached response cannot make a good deployment look broken.
+
+A `ready: true` that still fails on submit means the credentials are wrong
+rather than absent — the POST then returns 502, not 503.
 
 `ENQUIRY_TO` and `ENQUIRY_FROM` are optional overrides; `ENQUIRY_WEBHOOK_URL`
 still works as an alternative for a CRM intake and is used only when SMTP is

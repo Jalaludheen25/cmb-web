@@ -31,6 +31,43 @@ import { enquiryTypes, site } from "@/lib/content";
  * version of Next, and the Edge runtime is deprecated.
  */
 
+/**
+ * Configuration probe.
+ *
+ * `GET /api/enquiry` reports which transport is wired up, so the deployment can
+ * be verified without posting a test enquiry into the live sales mailbox. It
+ * returns booleans only — never a host, user or password.
+ *
+ * `no-store` matters: without it Vercel's CDN can serve a cached "none" from
+ * before the environment variables were added, making a correct deployment look
+ * broken.
+ */
+export function GET() {
+  const smtp = Boolean(
+    process.env.SMTP_HOST &&
+      process.env.SMTP_PORT &&
+      process.env.SMTP_USER &&
+      process.env.SMTP_PASS,
+  );
+  const webhook = Boolean(process.env.ENQUIRY_WEBHOOK_URL);
+
+  return NextResponse.json(
+    {
+      transport: smtp ? "smtp" : webhook ? "webhook" : "none",
+      ready: smtp || webhook,
+      // Which of the four SMTP variables are present, so a half-finished setup
+      // points straight at the missing one.
+      smtpVars: {
+        SMTP_HOST: Boolean(process.env.SMTP_HOST),
+        SMTP_PORT: Boolean(process.env.SMTP_PORT),
+        SMTP_USER: Boolean(process.env.SMTP_USER),
+        SMTP_PASS: Boolean(process.env.SMTP_PASS),
+      },
+    },
+    { headers: { "Cache-Control": "no-store" } },
+  );
+}
+
 const MAX = { name: 120, company: 160, email: 200, phone: 40, message: 4000 };
 
 type Payload = {
